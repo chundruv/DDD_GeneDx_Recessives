@@ -4,6 +4,11 @@ import sys
 import csv
 import pyranges as pr
 import argparse
+from src.read_and_filter_data import read_file
+from src.call_comphets import call_comphets
+from src.genes_positions import get_gene_positions
+from src.calc_expected import calc_expected
+from src.calc_observed import calc_obs
 
 parser = argparse.ArgumentParser( description='Run burden test' )
 parseargs = parser.add_argument_group('General inputs')
