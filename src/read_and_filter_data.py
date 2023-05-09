@@ -23,13 +23,13 @@ def read_and_filter_data(args, unrel_probands, unrel_parents, population_table):
     unrel_parents=unrel_parents[((np.isin(unrel_parents[0],pedigree['dad_id'].tolist())) | (np.isin(unrel_parents[1],pedigree['mum_id'].tolist())))]
 
     x=pd.read_csv(args.input_dir+'/chr'+args.chrom+'_'+args.g1+'_'+args.g2+'_recessive_candidate.txt', sep='\t', low_memory=False)
-    if args.idmap!="":
+    if args.idmap!=None:
         idmap=pd.read_csv(args.idmap, sep=r'\s+', low_memory=False)
         idmap.columns=['oldid', 'id']
         population_table.columns=['oldid', 'pop', 'subpop']
         population_table=pd.merge(population_table, idmap, on='oldid')
         population_table=population_table[['id','pop', 'subpop']]
-     else:
+    else:
         population_table.columns=['id', 'pop', 'subpop']
     x=pd.merge(x, population_table[['id', 'subpop']], on='stable_id')
     x['population']=x['subpop']
