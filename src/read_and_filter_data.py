@@ -12,6 +12,7 @@ def read_sample_lists(args):
     unrel_probands=unrel_probands[np.isin(unrel_probands[0], fail_qc[0])==False]
 
     population_table=pd.read_csv(args.popfile, header=None, sep=r'\s+',low_memory=False)
+    population_table=population_table[['individual_id','pop', 'subpop']]
     parents_populations=pd.merge(population_table, unrel_parents)
     probands_populations=pd.merge(population_table, unrel_probands)
 
@@ -25,21 +26,21 @@ def read_and_filter_data(args, unrel_probands, unrel_parents, population_table):
     x=pd.read_csv(args.input_dir+'/chr'+str(args.chrom)+'_'+str(args.g1)+'_'+str(args.g2)+'_recessive_candidate.txt', sep='\t', low_memory=False)
     if args.idmap!=None:
         idmap=pd.read_csv(args.idmap, sep=r'\s+', header=None)
-        idmap.columns=['oldid', 'id']
+        idmap.columns=['oldid', 'individual_id']
         population_table.columns=['oldid', 'pop', 'subpop']
         population_table=pd.merge(population_table, idmap, on='oldid')
-        population_table=population_table[['id','pop', 'subpop']]
+        population_table=population_table[['individual_id','pop', 'subpop']]
     else:
-        population_table.columns=['id', 'pop', 'subpop']
-    x=pd.merge(x, population_table[['id', 'subpop']], on='stable_id')
+        population_table.columns=['individual_id', 'pop', 'subpop']
+    x=pd.merge(x, population_table[['individual_id', 'subpop']], on='individual_id')
     x['population']=x['subpop']
-    x['stable_id']=x['stable_id'].astype('str')
+    x['individual_id']=x['individual_id'].astype('str')
     unrel_parents[0]=unrel_parents[0].astype('str')
     unrel_probands[0]=unrel_probands[0].astype('str')
 
     x=x[( ((x['is_proband']==True) & (x['dad_genotype'].isna()==False) & (x['mum_genotype'].isna()==False)) | ((x['is_proband']==False) & (x['child_genotype'].isna()==False)) )]
     x['size']=x['ref'].str.len() - x['alt'].str.len()
-    x=pd.concat([x[x['is_proband']==True], pd.merge(x[x['is_proband']==False], unrel_parents, left_on='stable_id', right_on=0)[x.columns]])
+    x=pd.concat([x[x['is_proband']==True], pd.merge(x[x['is_proband']==False], unrel_parents, left_on='id', right_on=0)[x.columns]])
     return(x)
 
 def consequence_filtering(x, cadd_filter, cadd_indel_filter, revel_filter, varity_filter, moipred_filter, clinpred_filter, polyphen_filter, synsplice_filter):

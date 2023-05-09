@@ -1,7 +1,7 @@
 import pandas as pd
 
 def calc_expected(x, lds, genes, classes, parents_populations, populations, N_haps, a, consequence_classes, unrel_parents):
-    x=x[(np.isin(x['stable_id'], unrel_parents[0].tolist())) | (x['is_proband']==True)]
+    x=x[(np.isin(x['individual_id'], unrel_parents[0].tolist())) | (x['is_proband']==True)]
 
     for gene in genes:
         for c in classes:
@@ -14,26 +14,26 @@ def calc_expected(x, lds, genes, classes, parents_populations, populations, N_ha
                 ind_subset=x_subset[x_subset['child_id']==i]
     
                 # loop over parents
-                for p in ind_subset['stable_id'].unique():
+                for p in ind_subset['individual_id'].unique():
                     # get parent populations
                     # change column name for gdx, probably 0 if no header
-                    if p in parents_populations['person_stable_id'].tolist():
-                        parent_pop = parents_populations[parents_populations['person_stable_id']==p][2].tolist()[0]
+                    if p in parents_populations['individual_id'].tolist():
+                        parent_pop = parents_populations[parents_populations['individual_id']==p][2].tolist()[0]
                         # only continue if parent in a population of interest
                         if parent_pop in populations:
                             # if geno=2, both haplotypes have genotype
-                            if ind_subset[ind_subset['stable_id']==p]['genotype'].max()==2:
+                            if ind_subset[ind_subset['individual_id']==p]['genotype'].max()==2:
                                 h[c][gene][parent_pop]+=2
                             # if geno=1 and only 1 variant in parent is het => only 1 haplotype has genotype
-                            elif len(ind_subset[ind_subset['stable_id']==p]['position'].unique())==1:
+                            elif len(ind_subset[ind_subset['individual_id']==p]['position'].unique())==1:
                                 h[c][gene][parent_pop]+=1
                             # else multiple hets in parent
                             else:
                                 # if child geno doesn't change => only 1 haplotype has genotype
-                                if len(ind_subset[ind_subset['stable_id']==p]['child_genotype'].unique())==1:
+                                if len(ind_subset[ind_subset['individual_id']==p]['child_genotype'].unique())==1:
                                     h[c][gene][parent_pop]+=1
                                 # child geno changes. If other parent doesn't have multiple het or homalts => both haplotypes have genotype
-                                elif len(ind_subset[ind_subset['stable_id']!=p]['child_genotype'].unique())<2 and ind_subset[ind_subset['stable_id']!=p]['genotype'].max()<2:
+                                elif len(ind_subset[ind_subset['individual_id']!=p]['child_genotype'].unique())<2 and ind_subset[ind_subset['individual_id']!=p]['genotype'].max()<2:
                                     h[c][gene][parent_pop]+=2
                                 # else can't tell if both haplotypes have a genotype or not so we only count 1
                                 else:

@@ -10,10 +10,10 @@ def call_comphets(x):
         # subset rows which are in this gene, are hets, and the individual is a proband
         x_gene=x[(x['gene.stable.id']==gene) & (x['genotype']==1) & (x['is_proband']==True)]
         # loop over this subsetted dataframe
-        for ind in np.unique(x_gene['stable_id']):
+        for ind in np.unique(x_gene['individual_id']):
             # We can only pseudo-phase variants where one of the mum or dad is hom-ref. In all other cases it is uncertain which parent the allele was inherited from
-            dad=np.where((x_gene['stable_id']==ind) & (x_gene['child_inheritance']=='dad'))[0]
-            mum=np.where((x_gene['stable_id']==ind) & (x_gene['child_inheritance']=='mum'))[0]
+            dad=np.where((x_gene['individual_id']==ind) & (x_gene['child_inheritance']=='dad'))[0]
+            mum=np.where((x_gene['individual_id']==ind) & (x_gene['child_inheritance']=='mum'))[0]
     
             x_dad = x_gene.iloc[dad,]
             x_mum = x_gene.iloc[mum,]
