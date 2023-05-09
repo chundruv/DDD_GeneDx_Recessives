@@ -22,7 +22,7 @@ def read_and_filter_data(args, unrel_probands, unrel_parents, population_table):
     unrel_probands=unrel_probands[np.isin(unrel_probands[0],pedigree['individual_id'].tolist())]
     unrel_parents=unrel_parents[((np.isin(unrel_parents[0],pedigree['dad_id'].tolist())) | (np.isin(unrel_parents[1],pedigree['mum_id'].tolist())))]
 
-    x=pd.read_csv(args.input_dir+'/chr'+args.chrom+'_'+args.g1+'_'+args.g2+'_recessive_candidate.txt', sep='\t', low_memory=False)
+    x=pd.read_csv(args.input_dir+'/chr'+str(args.chrom)+'_'+str(args.g1)+'_'+str(args.g2)+'_recessive_candidate.txt', sep='\t', low_memory=False)
     if args.idmap!=None:
         idmap=pd.read_csv(args.idmap, sep=r'\s+', low_memory=False)
         idmap.columns=['oldid', 'id']

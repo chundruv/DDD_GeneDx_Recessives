@@ -162,7 +162,7 @@ lmbda, lmbda1 = calc_expected(x, lds, genes, classes, parents_populations, popul
 consequence_classes={'lof/lof':['lof'], 'lof/missense':['lof', 'missense/inframe'], 'missense/missense':['missense/inframe'], 'synonymous/synonymous':['synonymous_variant']}
 OB, varIDs = calc_obs(x, unrel_parents, unrel_probands, populations, consequence_classes, genes, probands_populations, chets)
 
-with open(args.output_dir+'/parts/chr'+args.chrom+'_'+args.g1+'_'+args.g2+'.txt', 'w') as write_file:
+with open(args.output_dir+'/parts/chr'+str(args.chrom)+'_'+str(args.g1)+'_'+str(args.g2)+'.txt', 'w') as write_file:
     csvwrite=csv.writer(write_file, delimiter='\t')
     csvwrite.writerow(['Gene', 'Variant_class', 'Population', 'LD_thinning_r2', 'Observed_biallelic_genotypes', 'N_probands', 'N_parents', 'Expected_freq_biallelic_genotypes', 'corrected_Expected_freq_biallelic_genotypes'])
     for pop in populations:
@@ -171,7 +171,7 @@ with open(args.output_dir+'/parts/chr'+args.chrom+'_'+args.g1+'_'+args.g2+'.txt'
                 for ld in lds:
                     csvwrite.writerow([gene, c, pop, ld, OB[c][gene][pop], N_probands[pop], N_haps[pop]/2, lmbda[c][gene][pop][ld], lmbda1[c][gene][pop][ld]])
 
-with open(args.output_dir+'/vars/chr'+args.chrom+'_'+args.g1+'_'+args.g2+'.txt', 'w') as write_file:
+with open(args.output_dir+'/vars/chr'+str(args.chrom)+'_'+str(args.g1)+'_'+str(args.g2)+'.txt', 'w') as write_file:
     csvwrite=csv.writer(write_file, delimiter='\t')
     csvwrite.writerow(['Gene', 'Variant_class', 'Population', 'Individual_ID', 'Variant_ID', 'Genotype'])
     for c in consequence_classes:
