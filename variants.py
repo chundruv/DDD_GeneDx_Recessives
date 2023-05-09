@@ -6,7 +6,7 @@ import pyranges as pr
 import argparse
 from src.read_and_filter_data import read_file
 from src.call_comphets import call_comphets
-from src.genes_positions import get_gene_positions
+from src.genes_positions import get_gene_pos
 from src.calc_expected import calc_expected
 from src.calc_observed import calc_obs
 
@@ -144,7 +144,7 @@ missense_filters.add_argument(
 args = parser.parse_args()
 
 x, parents_populations, probands_populations, populations, N_haps, N_probands = read_file(args)
-gene_pos, not_used = get_gene_positions(args.gen_path, args.chrom, args.g1, args.g2)
+gene_pos, not_used = get_gene_pos(args.gen_path, args.chrom, args.g1, args.g2)
 
 chets = call_comphets(x)
 
