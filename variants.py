@@ -33,7 +33,7 @@ parseargs.add_argument(
         '--output_dir',
         type = str,
         required = True,
-        default = "out/"
+        default = "out/",
         help = 'Output directory')
 parseargs.add_argument(
         '--genepos',
@@ -92,49 +92,49 @@ missense_filters.add_argument(
         '--cadd_threshold',
         type = float,
         required = False,
-	default = 24.18
+	default = 24.18,
         help = 'CADD threshold')
 missense_filters.add_argument(
         '--cadd_indel_threshold',
         type = float,
         required = False,
-        default = 17.34
+        default = 17.34,
         help = 'CADD indel threshold')
 missense_filters.add_argument(
         '--revel_threshold',
         type = float,
         required = False,
-        default = 0.36
+        default = 0.36,
         help = 'REVEL threshold')
 missense_filters.add_argument(
         '--varity_threshold',
         type = float,
         required = False,
-        default = 0.25
+        default = 0.25,
         help = 'VARITY-ER threshold')
 missense_filters.add_argument(
         '--polyphen_threshold',
         type = float,
         required = False,
-        default = 0.59
+        default = 0.59,
         help = 'PolyPhen threshold')
 missense_filters.add_argument(
         '--clinpred_threshold',
         type = float,
         required = False,
-        default = 0.53
+        default = 0.53,
         help = 'ClinPred threshold')
 missense_filters.add_argument(
         '--moipred_threshold',
         type = float,
         required = False,
-        default = 0.11
+        default = 0.11,
         help = 'MOIpred recessive probability threshold')
 missense_filters.add_argument(
         '--synsplice_threshold',
         type = float,
         required = False,
-        default = 0.8
+        default = 0.8,
         help = 'MOIpred recessive probability threshold')
 args = parser.parse_args()
 
