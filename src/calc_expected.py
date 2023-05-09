@@ -53,4 +53,4 @@ def calc_expected(x, lds, genes, classes, parents_populations, populations, N_ha
                 for c in ['lof/missense']:
                     lmbda[c][gene][pop][ld] = (1 - a[gene][pop][ld]) * (2 * f[consequence_classes[c][0]][gene][pop] * f[consequence_classes[c][1]][gene][pop] * (1 - f[consequence_classes[c][0]][gene][pop]))
                     lmbda1[c][gene][pop][ld] = (1 - a[gene][pop][ld]) * (2 * f1[consequence_classes[c][0]][gene][pop] * f1[consequence_classes[c][1]][gene][pop] * (1 - f1[consequence_classes[c][0]][gene][pop]))
-     return((lmbda, lmbda1))
+    return((lmbda, lmbda1))
