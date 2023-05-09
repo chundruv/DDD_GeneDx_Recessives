@@ -21,7 +21,7 @@ parseargs.add_argument(
         '--g1',
         type = int,
         required = False,
-        default = 1,
+        default = 0,
         help = 'Segment start index')
 parseargs.add_argument(
         '--g2',
