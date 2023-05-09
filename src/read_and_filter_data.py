@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 def read_sample_lists(args):
-    unrel_probands=pd.read_table(args.unrel_proband, header=None, sep=r'\s+')
+    unrel_probands=pd.read_table(args.unrel_probands, header=None, sep=r'\s+')
     unrel_parents=pd.read_table(args.unrel_parents, header=None, sep=r'\s+')
     unaffected_parents=pd.read_table(args.unaff_parents, header=None, sep=r'\s+')
     fail_qc=pd.read_table(args.qcfail, header=None, sep=r'\s+')
@@ -98,4 +98,4 @@ def read_file(args):
     populations={i[1][2]:i[1][1] for i in population_table[[1,2]].drop_duplicates().iterrows() if i[1][2].endswith('OTH')==False}
     N_haps={pop:2*parents_populations[parents_populations[2]==pop].shape[0] for pop in populations}
     N_probands={pop:probands_populations[probands_populations[2]==pop].shape[0] for pop in populations}
-    return((x, parents_populations, probands_populations, populations, N_haps, N_probands)) 
+    return((x, parents_populations, probands_populations, populations, N_haps, N_probands, unrel_parents, unrel_probands)) 

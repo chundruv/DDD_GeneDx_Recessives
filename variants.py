@@ -67,12 +67,12 @@ parseargs.add_argument(
         required = True,
         help = 'Pedigree file')
 parseargs.add_argument(
-        '--unrel_proband',
+        '--unrel_probands',
         type = str,
         required = True,
         help = 'File of unrelated proband IDs')
 parseargs.add_argument(
-        '--unrel_parent',
+        '--unrel_parents',
         type = str,
         required = True,
         help = 'File of unrelated parent IDs')
@@ -143,7 +143,7 @@ missense_filters.add_argument(
         help = 'MOIpred recessive probability threshold')
 args = parser.parse_args()
 
-x, parents_populations, probands_populations, populations, N_haps, N_probands = read_file(args)
+x, parents_populations, probands_populations, populations, N_haps, N_probands, unrel_parents, unrel_probands = read_file(args)
 gene_pos, not_used = get_gene_pos(args.gen_path, args.chrom, args.g1, args.g2)
 
 chets = call_comphets(x)
