@@ -17,6 +17,7 @@ def read_sample_lists(args):
 
     population_table=pd.read_csv(args.popfile, header=None, sep=r'\s+',low_memory=False)
     population_table.columns=['individual_id','pop', 'subpop']
+    population_table['individual_id']=population_table['individual_id'].astype('str')
 
     parents_populations=pd.merge(population_table, unrel_parents, left_on='individual_id', right_on=0)
     probands_populations=pd.merge(population_table, unrel_probands, left_on='individual_id', right_on=0)
@@ -31,7 +32,8 @@ def read_and_filter_data(args, unrel_probands, unrel_parents, population_table):
     unrel_parents=unrel_parents[((np.isin(unrel_parents[0],pedigree['dad_id'].tolist())) | (np.isin(unrel_parents[0],pedigree['mum_id'].tolist())))]
 
     x=pd.read_csv(args.input_dir+'/chr'+str(args.chrom)+'_'+str(args.g1)+'_'+str(args.g2)+'_recessive_candidate.txt', sep='\t', low_memory=False)
-
+    x['stable_id']=x['stable_id'].astype('str')
+    
     if args.idmap==None:  
         x=pd.merge(x, population_table[['individual_id', 'subpop']], right_on='individual_id', left_on='stable_id')
     else:
@@ -41,7 +43,7 @@ def read_and_filter_data(args, unrel_probands, unrel_parents, population_table):
         x=pd.merge(x, population_table[['individual_id', 'subpop']], on='individual_id')
 
     x['population']=x['subpop']
-    x['individual_id']=x['individual_id'].astype('str')
+
 
     x=x[( ((x['is_proband']==True) & (x['dad_genotype'].isna()==False) & (x['mum_genotype'].isna()==False)) | ((x['is_proband']==False) & (x['child_genotype'].isna()==False)) )]
     x['size']=x['ref'].str.len() - x['alt'].str.len()
