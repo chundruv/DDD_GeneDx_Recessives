@@ -146,13 +146,13 @@ args = parser.parse_args()
 x, parents_populations, probands_populations, populations, N_haps, N_probands, unrel_parents, unrel_probands = read_file(args)
 gene_pos, not_used = get_gene_pos(args.genepos, args.chrom, args.g1, args.g2)
 
-chets = call_comphets(x)
-
 if args.skipGenes==None:
     genes=x['gene.stable.id'].unique()
 else:
     skipgenes=pd.read_csv(args.skipGenes, header=None)
     genes=[g for g in x['gene.stable.id'].unique() if g not in skipgenes[0].tolist()]
+
+chets = call_comphets(x, genes)
 
 classes=['lof', 'missense/inframe', 'synonymous_variant']
 lds=[0.2, 0.4, 0.6, 0.8]

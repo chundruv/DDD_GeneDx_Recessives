@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-def call_comphets(x):
+def call_comphets(x, genes):
     chets= pd.DataFrame(columns=list(x.columns)+['functional_category'])
     chets=chets.astype({'is_proband':bool})
     chets=chets.astype({'is_proband':bool})
