@@ -80,7 +80,7 @@ parseargs.add_argument(
 parseargs.add_argument(
         '--idmap',
         type = str,
-        required = True,
+        required = False,
         help = 'Map IDs from VCF/parse output to pedigree IDs')    
 parseargs.add_argument(
         '--qcfail',
