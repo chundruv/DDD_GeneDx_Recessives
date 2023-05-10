@@ -12,7 +12,7 @@ def read_sample_lists(args):
     unrel_probands=unrel_probands[np.isin(unrel_probands[0], fail_qc[0])==False]
 
     population_table=pd.read_csv(args.popfile, header=None, sep=r'\s+',low_memory=False)
-    population_table=population_table[['individual_id','pop', 'subpop']]
+    population_table.columns=['individual_id','pop', 'subpop']
     parents_populations=pd.merge(population_table, unrel_parents)
     probands_populations=pd.merge(population_table, unrel_probands)
 
