@@ -9,6 +9,7 @@ from src.call_comphets import call_comphets
 from src.genes_positions import get_gene_pos
 from src.calc_expected import calc_expected
 from src.calc_observed import calc_obs
+from src.rohs import calc_roh_overlap
 
 parser = argparse.ArgumentParser( description='Run burden test' )
 parseargs = parser.add_argument_group('General inputs')
@@ -156,10 +157,11 @@ chets = call_comphets(x, genes)
 
 classes=['lof', 'missense/inframe', 'synonymous_variant']
 lds=[0.2, 0.4, 0.6, 0.8]
+consequence_classes={'lof/lof':['lof'], 'lof/missense':['lof', 'missense/inframe'], 'missense/missense':['missense/inframe'], 'synonymous/synonymous':['synonymous_variant']}
 
+a = calc_roh_overlap(genes, gene_pos, args.rohs_dir, populations, N_probands, probands_populations)
 lmbda, lmbda1 = calc_expected(x, lds, genes, classes, parents_populations, populations, N_haps, a, consequence_classes, unrel_parents)
 
-consequence_classes={'lof/lof':['lof'], 'lof/missense':['lof', 'missense/inframe'], 'missense/missense':['missense/inframe'], 'synonymous/synonymous':['synonymous_variant']}
 OB, varIDs = calc_obs(x, unrel_parents, unrel_probands, populations, consequence_classes, genes, probands_populations, chets)
 
 with open(args.output_dir+'/parts/chr'+str(args.chrom)+'_'+str(args.g1)+'_'+str(args.g2)+'.txt', 'w') as write_file:

@@ -1,6 +1,8 @@
 import pandas as pd
+import numpy as np
+import pyranges as pr
 
-def calc_roh_overlap(genes, gene_pos, rohs_dir, populations, qual_filter=20, N_probands)
+def calc_roh_overlap(genes, genes_pos, rohs_dir, populations, N_probands, probands_populations, qual_filter=20):
     lds=[0.2, 0.4, 0.6, 0.8]
     
     a_tmp={gene:{pop:{ld:0 for ld in lds} for pop in populations} for gene in genes}
