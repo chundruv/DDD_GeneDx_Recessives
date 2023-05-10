@@ -21,12 +21,20 @@ def read_sample_lists(args):
 
 def read_and_filter_data(args, unrel_probands, unrel_parents, population_table):
     pedigree=pd.read_csv(args.pedfile, sep=r'\s+', low_memory=False)
+    pedigree.columns=["family_id", "individual_id", "dad_id", "mum_id", "sex", "affected"]
     unrel_probands=unrel_probands[np.isin(unrel_probands[0],pedigree['individual_id'].tolist())]
     unrel_parents=unrel_parents[((np.isin(unrel_parents[0],pedigree['dad_id'].tolist())) | (np.isin(unrel_parents[0],pedigree['mum_id'].tolist())))]
 
     x=pd.read_csv(args.input_dir+'/chr'+str(args.chrom)+'_'+str(args.g1)+'_'+str(args.g2)+'_recessive_candidate.txt', sep='\t', low_memory=False)
 
-    x=pd.merge(x, population_table[['individual_id', 'subpop']], right_on='individual_id', left_on='stable_id')
+    if args.idmap==None:  
+        x=pd.merge(x, population_table[['individual_id', 'subpop']], right_on='individual_id', left_on='stable_id')
+    else:
+        idmap=pd.read_csv(args.idmap, sep=r'\s+')
+        idmap.columns=['stable_id', 'individual_id']
+        x=pd.merge(x, idmap)
+        x=pd.merge(x, population_table[['individual_id', 'subpop']], on='individual_id')
+
     x['population']=x['subpop']
     x['individual_id']=x['individual_id'].astype('str')
     unrel_parents[0]=unrel_parents[0].astype('str')

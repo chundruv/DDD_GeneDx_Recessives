@@ -78,6 +78,11 @@ parseargs.add_argument(
         required = True,
         help = 'File of unaffected parent IDs')
 parseargs.add_argument(
+        '--idmap',
+        type = str,
+        required = True,
+        help = 'Map IDs from VCF/parse output to pedigree IDs')    
+parseargs.add_argument(
         '--qcfail',
         type = str,
         required = True,
