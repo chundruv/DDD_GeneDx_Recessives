@@ -53,11 +53,6 @@ parseargs.add_argument(
         required = True,
         help = 'Directory containing bcftools-roh calls')
 parseargs.add_argument(
-        '--idmap',
-        type = str,
-        required = False,
-        help = 'ID map file')
-parseargs.add_argument(
         '--popfile',
         type = str,
         required = True,
