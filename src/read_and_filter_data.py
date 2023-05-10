@@ -96,7 +96,7 @@ def read_file(args):
     unrel_probands, unrel_parents, parents_populations, probands_populations, population_table = read_sample_lists(args)
     x = read_and_filter_data(args, unrel_probands, unrel_parents, population_table)
     x = consequence_filtering(x, args.cadd_threshold, args.cadd_indel_threshold, args.revel_threshold, args.varity_threshold, args.moipred_threshold, args.clinpred_threshold, args.polyphen_threshold, args.synsplice_threshold)
-    populations={i[1][2]:i[1][1] for i in population_table[[1,2]].drop_duplicates().iterrows() if i[1][2].endswith('OTH')==False}
+    populations={i['subpop']:i['pop'] for i in population_table[['pop','subpop']].drop_duplicates().iterrows() if i['subpop'].endswith('OTH')==False}
     N_haps={pop:2*parents_populations[parents_populations[2]==pop].shape[0] for pop in populations}
     N_probands={pop:probands_populations[probands_populations[2]==pop].shape[0] for pop in populations}
     return((x, parents_populations, probands_populations, populations, N_haps, N_probands, unrel_parents, unrel_probands)) 
