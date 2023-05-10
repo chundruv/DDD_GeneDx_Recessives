@@ -144,7 +144,7 @@ missense_filters.add_argument(
 args = parser.parse_args()
 
 x, parents_populations, probands_populations, populations, N_haps, N_probands, unrel_parents, unrel_probands = read_file(args)
-gene_pos, not_used = get_gene_pos(args.gen_path, args.chrom, args.g1, args.g2)
+gene_pos, not_used = get_gene_pos(args.genepos, args.chrom, args.g1, args.g2)
 
 chets = call_comphets(x)
 
