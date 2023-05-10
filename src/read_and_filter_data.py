@@ -40,7 +40,7 @@ def read_and_filter_data(args, unrel_probands, unrel_parents, population_table):
 
     x=x[( ((x['is_proband']==True) & (x['dad_genotype'].isna()==False) & (x['mum_genotype'].isna()==False)) | ((x['is_proband']==False) & (x['child_genotype'].isna()==False)) )]
     x['size']=x['ref'].str.len() - x['alt'].str.len()
-    x=pd.concat([x[x['is_proband']==True], pd.merge(x[x['is_proband']==False], unrel_parents, left_on='id', right_on=0)[x.columns]])
+    x=pd.concat([x[x['is_proband']==True], pd.merge(x[x['is_proband']==False], unrel_parents, left_on='individual_id', right_on=0)[x.columns]])
     return(x)
 
 def consequence_filtering(x, cadd_filter, cadd_indel_filter, revel_filter, varity_filter, moipred_filter, clinpred_filter, polyphen_filter, synsplice_filter):
