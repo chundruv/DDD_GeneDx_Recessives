@@ -15,6 +15,12 @@ def read_sample_lists(args):
     unrel_parents=unrel_parents[np.isin(unrel_parents[0], fail_qc[0])==False]
     unrel_probands=unrel_probands[np.isin(unrel_probands[0], fail_qc[0])==False]
 
+    pedigree=pd.read_csv(args.pedfile, sep=r'\s+', low_memory=False)
+    pedigree=pedigree.iloc[:,range(0,6)]
+    pedigree.columns=["family_id", "individual_id", "dad_id", "mum_id", "sex", "affected"]
+    unrel_probands=unrel_probands[np.isin(unrel_probands[0],pedigree['individual_id'].tolist())]
+    unrel_parents=unrel_parents[((np.isin(unrel_parents[0],pedigree['dad_id'].tolist())) | (np.isin(unrel_parents[0],pedigree['mum_id'].tolist())))]
+
     population_table=pd.read_csv(args.popfile, header=None, sep=r'\s+',low_memory=False)
     population_table.columns=['individual_id','pop', 'subpop']
     population_table['individual_id']=population_table['individual_id'].astype('str')
@@ -24,16 +30,11 @@ def read_sample_lists(args):
 
     return((unrel_probands, unrel_parents, parents_populations, probands_populations, population_table))
 
-def read_and_filter_data(args, unrel_probands, unrel_parents, population_table):
-    pedigree=pd.read_csv(args.pedfile, sep=r'\s+', low_memory=False)
-    pedigree=pedigree.iloc[:,range(0,6)]
-    pedigree.columns=["family_id", "individual_id", "dad_id", "mum_id", "sex", "affected"]
-    unrel_probands=unrel_probands[np.isin(unrel_probands[0],pedigree['individual_id'].tolist())]
-    unrel_parents=unrel_parents[((np.isin(unrel_parents[0],pedigree['dad_id'].tolist())) | (np.isin(unrel_parents[0],pedigree['mum_id'].tolist())))]
+def read_and_filter_data(args, unrel_parents, population_table):
 
     x=pd.read_csv(args.input_dir+'/chr'+str(args.chrom)+'_'+str(args.g1)+'_'+str(args.g2)+'_recessive_candidate.txt', sep='\t', low_memory=False)
     x['stable_id']=x['stable_id'].astype('str')
-    
+
     if args.idmap==None:  
         x=pd.merge(x, population_table[['individual_id', 'subpop']], right_on='individual_id', left_on='stable_id')
     else:
@@ -43,7 +44,6 @@ def read_and_filter_data(args, unrel_probands, unrel_parents, population_table):
         x=pd.merge(x, population_table[['individual_id', 'subpop']], on='individual_id')
 
     x['population']=x['subpop']
-
 
     x=x[( ((x['is_proband']==True) & (x['dad_genotype'].isna()==False) & (x['mum_genotype'].isna()==False)) | ((x['is_proband']==False) & (x['child_genotype'].isna()==False)) )]
     x['size']=x['ref'].str.len() - x['alt'].str.len()
@@ -103,7 +103,7 @@ def consequence_filtering(x, cadd_filter, cadd_indel_filter, revel_filter, varit
 
 def read_file(args):
     unrel_probands, unrel_parents, parents_populations, probands_populations, population_table = read_sample_lists(args)
-    x = read_and_filter_data(args, unrel_probands, unrel_parents, population_table)
+    x = read_and_filter_data(args, unrel_parents, population_table)
     x = consequence_filtering(x, args.cadd_threshold, args.cadd_indel_threshold, args.revel_threshold, args.varity_threshold, args.moipred_threshold, args.clinpred_threshold, args.polyphen_threshold, args.synsplice_threshold)
     populations={i[1]['subpop']:i[1]['pop'] for i in population_table[['pop','subpop']].drop_duplicates().iterrows() if i[1]['subpop'].endswith('OTH')==False}
     N_haps={pop:2*parents_populations[parents_populations['subpop']==pop].shape[0] for pop in populations}

@@ -1,8 +1,5 @@
 import pandas as pd
-import numpy as np
-import sys
 import csv
-import pyranges as pr
 import argparse
 from src.read_and_filter_data import read_file
 from src.call_comphets import call_comphets
@@ -29,7 +26,7 @@ parseargs.add_argument(
         type = int,
         required = False,
         default = 17320,
-        help = 'Segment start index')
+        help = 'Segment end index')
 parseargs.add_argument(
         '--input_dir',
         type = str,
@@ -93,55 +90,55 @@ parseargs.add_argument(
         required = False,
         help = 'List of genes to skip')
 
-missense_filters = parser.add_argument_group('Change missense filtering thresholds')
+missense_filters = parser.add_argument_group('Change missense filtering thresholds - optional')
 missense_filters.add_argument(
         '--cadd_threshold',
         type = float,
         required = False,
 	default = 24.18,
-        help = 'CADD threshold')
+        help = 'CADD threshold, default=24.18')
 missense_filters.add_argument(
         '--cadd_indel_threshold',
         type = float,
         required = False,
         default = 17.34,
-        help = 'CADD indel threshold')
+        help = 'CADD indel threshold, default=17.34')
 missense_filters.add_argument(
         '--revel_threshold',
         type = float,
         required = False,
         default = 0.36,
-        help = 'REVEL threshold')
+        help = 'REVEL threshold, default=0.36')
 missense_filters.add_argument(
         '--varity_threshold',
         type = float,
         required = False,
         default = 0.25,
-        help = 'VARITY-ER threshold')
+        help = 'VARITY-ER threshold, default=0.25')
 missense_filters.add_argument(
         '--polyphen_threshold',
         type = float,
         required = False,
         default = 0.59,
-        help = 'PolyPhen threshold')
+        help = 'PolyPhen threshold, default=0.59')
 missense_filters.add_argument(
         '--clinpred_threshold',
         type = float,
         required = False,
         default = 0.53,
-        help = 'ClinPred threshold')
+        help = 'ClinPred threshold, default=0.53')
 missense_filters.add_argument(
         '--moipred_threshold',
         type = float,
         required = False,
         default = 0.11,
-        help = 'MOIpred recessive probability threshold')
+        help = 'MOIpred recessive probability threshold, default=0.11')
 missense_filters.add_argument(
         '--synsplice_threshold',
         type = float,
         required = False,
         default = 0.8,
-        help = 'MOIpred recessive probability threshold')
+        help = 'MOIpred recessive probability threshold, default=0.8')
 args = parser.parse_args()
 
 x, parents_populations, probands_populations, populations, N_haps, N_probands, unrel_parents, unrel_probands = read_file(args)
