@@ -21,6 +21,7 @@ def read_sample_lists(args):
 
 def read_and_filter_data(args, unrel_probands, unrel_parents, population_table):
     pedigree=pd.read_csv(args.pedfile, sep=r'\s+', low_memory=False)
+    pedigree=pedigree.iloc[:,range(0,6)]
     pedigree.columns=["family_id", "individual_id", "dad_id", "mum_id", "sex", "affected"]
     unrel_probands=unrel_probands[np.isin(unrel_probands[0],pedigree['individual_id'].tolist())]
     unrel_parents=unrel_parents[((np.isin(unrel_parents[0],pedigree['dad_id'].tolist())) | (np.isin(unrel_parents[0],pedigree['mum_id'].tolist())))]
