@@ -12,7 +12,7 @@ def calc_roh_overlap(genes, genes_pos, rohs_dir, populations, N_probands, proban
             rohs=pd.read_csv(rohs_dir+'/'+populations[pop]+'_ld'+str(ld)+'.txt', header=None, sep=r'\s+', low_memory=False)
             rohs.columns=['RG', 'individual_id', 'Chromosome', 'Start', 'End', 'length', 'n_variants', 'qual']
             rohs=rohs[rohs['qual']>=qual_filter]
-            rohs = rohs[np.isin(rohs['individual_id'], probands_populations[probands_populations[2]==pop][0].tolist())]
+            rohs = rohs[np.isin(rohs['individual_id'], probands_populations[probands_populations['subpop']==pop][0].tolist())]
             for gene in genes:
                 gene_df=pd.DataFrame([[genes_pos[gene].split(':')[0], genes_pos[gene].split(':')[1].split('-')[0], genes_pos[gene].split(':')[1].split('-')[1]]], columns=['Chromosome', 'Start', 'End'])
                 gr1, gr2 = pr.PyRanges(rohs), pr.PyRanges(gene_df)

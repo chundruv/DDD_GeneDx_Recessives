@@ -1,7 +1,9 @@
 import pandas as pd
+import numpy as np
 
 def calc_expected(x, lds, genes, classes, parents_populations, populations, N_haps, a, consequence_classes, unrel_parents):
     x=x[(np.isin(x['individual_id'], unrel_parents[0].tolist())) | (x['is_proband']==True)]
+    h={c:{gene:{pop:0 for pop in populations} for gene in genes} for c in classes}
 
     for gene in genes:
         for c in classes:
@@ -18,7 +20,7 @@ def calc_expected(x, lds, genes, classes, parents_populations, populations, N_ha
                     # get parent populations
                     # change column name for gdx, probably 0 if no header
                     if p in parents_populations['individual_id'].tolist():
-                        parent_pop = parents_populations[parents_populations['individual_id']==p][2].tolist()[0]
+                        parent_pop = parents_populations[parents_populations['individual_id']==p]['subpop'].tolist()[0]
                         # only continue if parent in a population of interest
                         if parent_pop in populations:
                             # if geno=2, both haplotypes have genotype

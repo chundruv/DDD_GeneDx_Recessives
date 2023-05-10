@@ -27,7 +27,7 @@ def calc_obs(x, unrel_parents, unrel_probands, populations, consequence_classes,
                                 chets_in_gene += [x_subset.iloc[i,0]]
                                 prev_count+=[x_subset.iloc[i,0]]
                     if x_subset.iloc[i, 1]==2:
-                        if c not in ['lof/missense']:
+                        if c!='lof/missense':
                             varIDs[c][gene][pop][x_subset.iloc[i,0]]={x_subset.iloc[i,13]:2}
                             OB[c][gene][pop]+=1
                             prev_count+=[x_subset.iloc[i,0]]
