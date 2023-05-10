@@ -14,7 +14,7 @@ def calc_obs(x, unrel_parents, unrel_probands, populations, consequence_classes,
             for c in consequence_classes:
                 x_subset = x[(x['gene.stable.id']==gene) & (x['population']==pop) & (np.isin(x['canonical_vep_annotation_category'],consequence_classes[c])) & (x['is_proband']==True)]
                 for i in range(0, x_subset.shape[0]):
-                    if x_subset.iloc[i,0] not in probands_populations['individual_id'].tolist():
+                    if x_subset.iloc[i]['individual_id'] not in probands_populations['individual_id'].tolist():
                         continue
                     if c!='synonymous/synonymous':
                         if x_subset.iloc[i,0] in prev_count:
