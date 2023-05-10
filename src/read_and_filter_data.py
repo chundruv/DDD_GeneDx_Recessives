@@ -18,8 +18,7 @@ def read_sample_lists(args):
     pedigree=pd.read_csv(args.pedfile, sep=r'\s+', dtype=str)
     pedigree=pedigree.iloc[:,range(0,6)]
     pedigree.columns=["family_id", "individual_id", "dad_id", "mum_id", "sex", "affected"]
-    unrel_probands=unrel_probands[np.isin(unrel_probands[0],pedigree['individual_id'].tolist())]
-    unrel_parents=pd.merge(unrel_parents[0], pedigree['individual_id'])
+    unrel_probands=pd.merge(unrel_probands[0], pedigree['individual_id'], left_on=0, right_on='individual_id')
     unrel_parents=unrel_parents[((np.isin(unrel_parents[0],pedigree['dad_id'].tolist())) | (np.isin(unrel_parents[0],pedigree['mum_id'].tolist())))]
 
     population_table=pd.read_csv(args.popfile, header=None, sep=r'\s+',low_memory=False)
