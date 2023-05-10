@@ -3,9 +3,13 @@ import numpy as np
 
 def read_sample_lists(args):
     unrel_probands=pd.read_table(args.unrel_probands, header=None, sep=r'\s+')
+    unrel_probands[0]=unrel_probands[0].astype('str')
     unrel_parents=pd.read_table(args.unrel_parents, header=None, sep=r'\s+')
+    unrel_parents[0]=unrel_parents[0].astype('str')
     unaffected_parents=pd.read_table(args.unaff_parents, header=None, sep=r'\s+')
+    unaffected_parents[0]=unaffected_parents[0].astype('str')
     fail_qc=pd.read_table(args.qcfail, header=None, sep=r'\s+')
+    fail_qc[0]=fail_qc[0].astype('str')
 
     unrel_parents=unrel_parents[np.isin(unrel_parents[0], unaffected_parents[0])]
     unrel_parents=unrel_parents[np.isin(unrel_parents[0], fail_qc[0])==False]
@@ -38,8 +42,6 @@ def read_and_filter_data(args, unrel_probands, unrel_parents, population_table):
 
     x['population']=x['subpop']
     x['individual_id']=x['individual_id'].astype('str')
-    unrel_parents[0]=unrel_parents[0].astype('str')
-    unrel_probands[0]=unrel_probands[0].astype('str')
 
     x=x[( ((x['is_proband']==True) & (x['dad_genotype'].isna()==False) & (x['mum_genotype'].isna()==False)) | ((x['is_proband']==False) & (x['child_genotype'].isna()==False)) )]
     x['size']=x['ref'].str.len() - x['alt'].str.len()
@@ -71,7 +73,7 @@ def consequence_filtering(x, cadd_filter, cadd_indel_filter, revel_filter, varit
     missense['MOIpredRP_pass']=False
     
     missense['PolyPhen']=missense['PolyPhen'].replace('[a-z]*[()_]', '', regex=True).astype('float64')
-    
+
     missense.loc[(missense['CADD_phred']>=cadd_filter),'CADD_pass']=True
     missense.loc[(missense['REVEL']>=revel_filter),'REVEL_pass']=True
     missense.loc[(missense['VARITYER_LOO']>=varity_filter),'VARITYER_pass']=True
