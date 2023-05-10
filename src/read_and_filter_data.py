@@ -70,6 +70,8 @@ def consequence_filtering(x, cadd_filter, cadd_indel_filter, revel_filter, varit
     missense['ClinPred_pass']=False
     missense['MOIpredRP_pass']=False
     
+    missense['PolyPhen']=missense['PolyPhen'].replace('[a-z]*[()_]', '', regex=True).astype('float64')
+    
     missense.loc[(missense['CADD_phred']>=cadd_filter),'CADD_pass']=True
     missense.loc[(missense['REVEL']>=revel_filter),'REVEL_pass']=True
     missense.loc[(missense['VARITYER_LOO']>=varity_filter),'VARITYER_pass']=True
