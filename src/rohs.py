@@ -9,7 +9,7 @@ def calc_roh_overlap(genes, genes_pos, rohs_dir, populations, N_probands, proban
     
     for pop in populations:
         for ld in lds:
-            rohs=pd.read_csv(rohs_dir+'/'+populations[pop]+'_ld'+str(ld)+'.txt', header=None, sep=r'\s+', low_memory=False)
+            rohs=pd.read_csv(rohs_dir+'/'+populations[pop]+'_ld'+str(ld)+'.txt', header=None, sep=r'\s+', low_memory=False, comment='#')
             rohs.columns=['RG', 'individual_id', 'Chromosome', 'Start', 'End', 'length', 'n_variants', 'qual']
             rohs=rohs[rohs['qual']>=qual_filter]
             rohs = rohs[np.isin(rohs['individual_id'], probands_populations[probands_populations['subpop']==pop][0].tolist())]
