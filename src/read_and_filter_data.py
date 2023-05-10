@@ -32,7 +32,7 @@ def read_and_filter_data(args, unrel_probands, unrel_parents, population_table):
         population_table=population_table[['individual_id','pop', 'subpop']]
     else:
         population_table.columns=['individual_id', 'pop', 'subpop']
-    x=pd.merge(x, population_table[['individual_id', 'subpop']], on='individual_id')
+    x=pd.merge(x, population_table[['individual_id', 'subpop']], right_on='individual_id', left_on='stable_id')
     x['population']=x['subpop']
     x['individual_id']=x['individual_id'].astype('str')
     unrel_parents[0]=unrel_parents[0].astype('str')
