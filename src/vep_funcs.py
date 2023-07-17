@@ -122,6 +122,7 @@ def worst_csq_with_vep(annotation_list):
     From Konrad Karczewski
 
     Modified on 2019-12-11 by Kaitlin Samocha to prioritize protein coding genes
+    Modified 2023 by Kartik Chundru to use canonical transcript - ***Change to MANE for hg38***
     """
     if len(annotation_list) == 0: return None
     worst = annotation_list[0]
@@ -140,6 +141,20 @@ def worst_csq_with_vep(annotation_list):
 
 
 def get_canonical_and_worst_csq(variant, csq, an, gene, consequence_categories=consequence_categories):
+    """
+    Get the canonical transcript and the worst consequence from the CSQ string of the variant
+    Input:
+    variant - cyvcf2 variant
+    csq - CSQ string from extract_csq
+    an - allele number
+    gene - gene of interest
+    consequence_categories - list from top of file
+    output:
+    vep_csq - canonical consequence
+    vep_csq_cat - canonical consequence category
+    worst_vep_csq - worst consequence
+    worst_csq_cat - worst consequence category
+    """            
     annotations = [dict(zip(csq, i.split('|'))) for i in variant.INFO.get('CSQ').split(',') if len(csq) == len(i.split('|')) and (int(i.split('|')[18]) == an+1) and (i.split('|')[csq.index('BIOTYPE')] == 'protein_coding') and (i.split('|')[csq.index('Gene')] == gene)]
     
     worst_vep_csq=worst_csq_with_vep(annotations)
