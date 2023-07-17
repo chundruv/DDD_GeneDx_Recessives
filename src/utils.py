@@ -32,6 +32,13 @@ def get_minimal_representation(pos, ref, alt):
         return (pos, ref, alt)
 
 def extract_csq(x):
+    """
+    extract the consequence string from the variant object
+    input:
+    x - cyvcf2 variant object
+    output:
+    csq - consequence string
+    """
     for i in x.header_iter():
         if i.type=='INFO':
             if i['ID']=='CSQ':
