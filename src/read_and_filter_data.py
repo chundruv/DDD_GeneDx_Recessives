@@ -2,6 +2,18 @@ import pandas as pd
 import numpy as np
 
 def read_sample_lists(args):
+    """
+    Read in lists of unrelated probands and parents, and the population assignments.
+
+    input:
+    * args
+    output:
+    * unrel_probands - list of unrelated probands
+    * unrel_parents - list of unrelated parents
+    * parents_populations - dataframe of unrelated parents and the population assignments
+    * probands_populations - dataframe of unrelated probands and the population assignments
+    * population_table - all population assignments
+    """
     unrel_probands=pd.read_table(args.unrel_probands, header=None, sep=r'\s+')
     unrel_probands[0]=unrel_probands[0].astype('str')
     unrel_parents=pd.read_table(args.unrel_parents, header=None, sep=r'\s+')
@@ -30,7 +42,15 @@ def read_sample_lists(args):
     return((unrel_probands, unrel_parents, parents_populations, probands_populations, population_table))
 
 def read_and_filter_data(args, unrel_parents, population_table):
-
+    """
+    read in output from parse.py with the hets and hom-alts
+    input:
+    * args
+    * unrel_parents - list of unrelated parents
+    * population_table - dataframe of population assignments
+    output:
+    * x - dataframe of genotypes of interest
+    """
     x=pd.read_csv(args.input_dir+'/chr'+str(args.chrom)+'_'+str(args.g1)+'_'+str(args.g2)+'_recessive_candidate.txt', sep='\t', low_memory=False)
     x['stable_id']=x['stable_id'].astype('str')
 
@@ -50,6 +70,28 @@ def read_and_filter_data(args, unrel_parents, population_table):
     return(x)
 
 def consequence_filtering(x, cadd_filter, cadd_indel_filter, revel_filter, varity_filter, moipred_filter, clinpred_filter, polyphen_filter, synsplice_filter):
+    """
+    Filter genotypes
+    - For synonymous variants we keep only variants with max_spliceai<0.1
+    - For LoF variants we take only LOFTEE HC variants
+    - For the LOFTEE LC variants, we filter on CADD and include it in the functional category
+    - For Missense variants we filter on CADD, PolyPhen2, ClinPred, MOIpred recessive probability, REVEL, and VARITY_ER. We require the variant to pass >70% of the available annoations
+    - For inframe indels we filter on CADD
+
+    input:
+    * x - dataframe of genotypes to filter
+    * cadd_filter - SNV CADD filter threshold, default=24.18
+    * cadd_indel_filter - Indel CADD filter threshold, default=17.34
+    * revel_filter - REVEL filter threshold, default=0.36
+    * varity_filter - VARITY_ER filter threshold, default=0.25
+    * moipred_filter - MOIpred recessive probability filter threshold, default=0.11
+    * clinpred_filter - ClinPred filter threshold, default=0.53
+    * polyphen_filter - PolyPhen2 filter threshold, default=0.59
+    * synsplice_filter - SpliceAI filter threshold, default=0.8
+
+    output:
+    * x - filtered dataframe
+    """
     consequence_categories = {"lof":["transcript_ablation", "splice_donor_variant","splice_acceptor_variant", "stop_gained","frameshift_variant", "stop_lost"],
     "missense/inframe":["start_lost", "inframe_insertion", "inframe_deletion", "missense_variant", "transcript_amplification", "protein_altering_variant", "splice_region_variant"],
     "synonymous_variant":["synonymous_variant"]}
@@ -101,6 +143,20 @@ def consequence_filtering(x, cadd_filter, cadd_indel_filter, revel_filter, varit
     return(x)
 
 def read_file(args):
+    """
+    Read in data and filter
+    input:
+    * args
+    output:
+    * x - filtered dataframe of genotypes of interest
+    * parents_populations - dataframe of unrelated parents and their population assignments
+    * probands_populations - dataframe of unrelated probands and their population assignments
+    * populations - list of populations in the data
+    * N_haps - number of unrelated parent haplotypes = 2*number of unrelated parents
+    * N_probands - number of unrelated probands
+    * unrel_parents - list of unrelated parents
+    * unrel_probands - list of unrelated probands
+    """
     unrel_probands, unrel_parents, parents_populations, probands_populations, population_table = read_sample_lists(args)
     x = read_and_filter_data(args, unrel_parents, population_table)
     x = consequence_filtering(x, args.cadd_threshold, args.cadd_indel_threshold, args.revel_threshold, args.varity_threshold, args.moipred_threshold, args.clinpred_threshold, args.polyphen_threshold, args.synsplice_threshold)
