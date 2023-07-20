@@ -1,4 +1,3 @@
-
 # Note that this list of VEP annotations is current as of v93 with 2 included for backwards compatibility (VEP <= 75)
 # From Konrad Karczewski
 # Slight updates from Jack Kosmicki and Kaitlin Samocha

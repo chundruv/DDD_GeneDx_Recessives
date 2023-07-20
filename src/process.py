@@ -4,13 +4,13 @@ import numpy as np
 
 def process_ped(pop, unrelpar_path, ped_path, samples):
     
-    population_assignment = pd.read_csv(pop,sep=" ", header=None, low_memory=False)
+    population_assignment = pd.read_csv(pop,sep="\t", header=None)
     population_assignment.columns = ['sample_id', 'superpop', 'subpop']
     populations = population_assignment['subpop'].unique().tolist()
     samples_pop={pop:population_assignment[population_assignment['subpop']==pop]['sample_id'].tolist() for pop in populations}
     samples_pop_inds={population_assignment.iloc[i,0]:population_assignment.iloc[i,2] for i in range(population_assignment.shape[0])}
 
-    unrelated_parents=pd.read_csv(unrelpar_path, header=None, sep=r'\s+', low_memory=False)
+    unrelated_parents=pd.read_csv(unrelpar_path, header=None)
     unrelated_parents_pops_df=pd.merge(population_assignment, unrelated_parents[0], left_on='sample_id', right_on=0)
     unrelated_parents_pops={pop:unrelated_parents_pops_df[unrelated_parents_pops_df['subpop']==pop].iloc[:,0].tolist() for pop in populations}
 

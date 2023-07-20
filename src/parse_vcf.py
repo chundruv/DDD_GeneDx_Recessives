@@ -131,8 +131,8 @@ def variant_parser(args):
                             spliceai = get_spliceai(chrom, variant.POS, variant.REF, alt, compliments, spliceai_tabix)
                             revel = get_REVEL(chrom, variant.POS, variant.REF, alt, compliments, revel_tabix)
                             varity = get_VARITY(chrom, variant.POS, variant.REF, alt, compliments, varity_tabix)
-			    clinpred = get_clinpred(chrom, variant.POS, variant.REF, alt, compliments, clinpred_tabix)
-			    moipred = get_moipred(chrom, variant.POS, variant.REF, alt, compliments, moipred_tabix)
+                            clinpred = get_clinpred(chrom, variant.POS, variant.REF, alt, compliments, clinpred_tabix)
+                            moipred = get_moipred(chrom, variant.POS, variant.REF, alt, compliments, moipred_tabix)
 
                             for i in hethoms:
                                 pop, child_inh, parent_inh = get_inh(samples_pop_inds, parents, ped, samples, gt_types, variant, i)
@@ -146,4 +146,4 @@ def variant_parser(args):
                                         child_inh, parent_inh, sum(gt_types[np.where(np.isin(samples,parents))[0]]==2),worst_vep_csq['VARIANT_CLASS'],
                                         str(variant.CHROM)+':'+str(variant.POS)+'_'+variant.REF+'_'+alt,worst_csq_cat, worst_vep_csq['Consequence'] ,vep_csq_cat,vep_csq['Consequence'], gene, gene_symbols[gene][0], gene_symbols[gene][1],variant.CHROM, 
                                         variant.POS,variant.REF, alt] + list(af_pop.values()) + gnomad_af +[pop]+[sum(gt_types[unrelated_parents_pop_index[pop]]!=3) for pop in populations]+ 
-                                        [cadd_phred, vep_csq['LoF'], revel, varity[0],varity[1],vep_csq['PolyPhen'], spliceai, clinpred, moipred_rp]])
+                                        [cadd_phred, vep_csq['LoF'], revel, varity[0],varity[1],vep_csq['PolyPhen'], spliceai, clinpred, moipred]])

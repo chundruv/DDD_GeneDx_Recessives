@@ -55,6 +55,16 @@ if __name__ == "__main__":
             required = True,
             help = 'VARITY file bgzipped and tabix indexed')
     required.add_argument(
+            '--clinpred',
+            type = str,
+            required = True,
+            help = 'ClinPred file bgzipped and tabix indexed')
+    required.add_argument(
+            '--moipred',
+            type = str,
+            required = True,
+            help = 'MOIPred file bgzipped and tabix indexed')
+    required.add_argument(
             '--chr',
             type = str,
             required = True,
