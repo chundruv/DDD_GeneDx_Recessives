@@ -56,7 +56,7 @@ def variant_parser(args):
     
     samples=x.samples
     genes, gene_symbols = get_gene_pos(args.gen, chrom, g1, g2)
-    ped, parents, unaffected, samples_pop, samples_pop_inds, unrelated_parents_pop_index, populations = process_ped(args.pop, args.unrelpar, args.ped, samples)
+    ped, parents, samples_pop, samples_pop_inds, unrelated_parents_pop_index, populations = process_ped(args.pop, args.unrelpar, args.ped, samples)
     csq = extract_csq(x)
 
     compliments = {"A":"T","C":"G","G":"C","T":"A"}
@@ -151,7 +151,7 @@ def variant_parser(args):
                                         [var if var!=3 else 'NA' for var in gt_types[np.where(np.isin(samples,parents[i]))]][0] if i in parents else 'NA',
                                         i if i in ped else 'NA',[var if var!=3 else 'NA' for var in gt_types[np.where(np.isin(samples,ped[i][0]))]][0] if i in ped else 'NA',
                                         i if i in ped else 'NA',[var if var!=3 else 'NA' for var in gt_types[np.where(np.isin(samples,ped[i][1]))]][0] if i in ped else 'NA',
-                                        child_inh, parent_inh, sum(gt_types[np.where(np.isin(samples,unaffected))[0]]==2),worst_vep_csq['VARIANT_CLASS'],
+                                        child_inh, parent_inh, sum(gt_types[np.where(np.isin(samples,parents))[0]]==2),worst_vep_csq['VARIANT_CLASS'],
                                         str(variant.CHROM)+':'+str(variant.POS)+'_'+variant.REF+'_'+alt,worst_csq_cat, worst_vep_csq['Consequence'] ,vep_csq_cat,vep_csq['Consequence'], gene, gene_symbols[gene][0], gene_symbols[gene][1],variant.CHROM, 
                                         variant.POS,variant.REF, alt] + list(af_pop.values()) + gnomad_af +[gnomad_nhomalt, pop]+[sum(gt_types[unrelated_parents_pop_index[pop]]!=3) for pop in populations]+ 
                                         [cadd_phred, vep_csq['LoF'], mpc, revel, primateai,varity[0],varity[1],vep_csq['PolyPhen'], spliceai]])
