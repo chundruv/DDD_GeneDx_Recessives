@@ -66,7 +66,7 @@ parseargs.add_argument(
         required = True,
         help = 'File of unrelated proband IDs')
 parseargs.add_argument(
-        '--unrel_unaff_parents',
+        '--unrel_parents',
         type = str,
         required = True,
         help = 'File of unrelated unaffected parent IDs')
