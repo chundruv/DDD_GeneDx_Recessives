@@ -20,7 +20,6 @@ def variant_parser(args):
 
     Input args:
         vcf =   The input vcf file. Either vcf.gz or bcf; index is required
-        g2p =   DDG2P genes file downloaded from DECIPHER (https://www.ebi.ac.uk/gene2phenotype/downloads/DDG2P.csv.gz)
         pop =   Populations assignment file. Columns: "ID Pop"
         unrelpar    =   unrelated unaffected parents list
         gen =   gene position file downloaded from biomart; required columns: 'HGNC symbol', 'Chromosome/scaffold name', 'Gene start (bp)', 'Gene end (bp)'
@@ -28,11 +27,7 @@ def variant_parser(args):
         cadd    =   SNV CADD file (https://cadd.gs.washington.edu/download)
         cadd-indels =   Indels CADD file (https://cadd.gs.washington.edu/download)
         revel   =   REVEL file bgzipped and tabix indexed (https://sites.google.com/site/revelgenomics/downloads?authuser=0)
-        mpc =   Variant MPC file (ftp://ftp.broadinstitute.org/pub/ExAC_release/release1/regional_missense_constraint/)
-        primateai   =   PrimateAI file bgzipped and tabix indexed (https://basespace.illumina.com/s/cPgCSmecvhb4)
         varity  =   VARITY file bgzipped and tabix indexed (http://varity.varianteffect.org/downloads/varity_all_predictions.tar.gz)
-        gmd =   gnomAD exomes v2 allele frequency file (https://gnomad.broadinstitute.org/downloads)
-        gmd_genomes = gnomAD genomes v2 allele frequency file (https://gnomad.broadinstitute.org/downloads)
         pli =   pLI scores (https://storage.googleapis.com/gcp-public-data--gnomad/legacy/exac_browser/forweb_cleaned_exac_r03_march16_z_data_pLI_CNV-final.txt.gz)
         snv_qc = QC thresholds for SNVs format= GQ,DP,P(AB),VQSLOD,FPASS
         indel_qc = QC thresholds for indels format= GQ,DP,AB,VQSLOD,FPASS
@@ -61,7 +56,7 @@ def variant_parser(args):
 
     gene_csqpos = csq.index('Gene')
 
-    cadd_tabix, cadd_indels_tabix, mpc_tabix, gnomad_tabix, revel_tabix, primateai_tabix, varity_tabix, spliceai_tabix, spliceai_indels_tabix = init_tabix(args)
+    cadd_tabix, cadd_indels_tabix, revel_tabix, varity_tabix, spliceai_tabix = init_tabix(args)
 
     # Fomart = [ GQ, DP, P(AB), VQSLOD, FPASS ]
     # SNV QC - DDD GQ>20, DP>7, P(AB)>1e-3, VQSLOD>-2, FPASS>0.5
@@ -76,7 +71,7 @@ def variant_parser(args):
     csv_header=['stable_id','genotype','is_proband','child_id','child_genotype','dad_id','dad_genotype','mum_id','mum_genotype','child_inheritance','parent_inheritance','n_unaffected_homalt','variant_class',
             'variant_id','worst_vep_annotation_category','worst_vep_annotation','canonical_vep_annotation_category','canonical_vep_annotation','gene.stable.id', 'gene.name', 'HGNC.symbol','chrom','position','ref',
             'alt']+[pop+'_unrelated_parents_popents_af' for pop in populations]+['gnomAD2.1_AFR','gnomAD2.1_AMR','gnomAD2.1_EAS','gnomAD2.1_FIN','gnomAD2.1_NFE','gnomAD2.1_SAS','gnomAD2.1_ASJ',
-            'gnomad2.1_nhomalt','population']+['n_unrelated_parents_'+pop for pop in populations]+['CADD_phred','LOFTEE','REVEL','VARITYR_LOO','VARITYER_LOO','PolyPhen', 'spliceai']
+            'population']+['n_unrelated_parents_'+pop for pop in populations]+['CADD_phred','LOFTEE','REVEL','VARITYR_LOO','VARITYER_LOO','PolyPhen', 'spliceai']
 
     if os.path.exists(args.outdir)==False:
 	    os.makedirs(args.outdir)
@@ -133,10 +128,9 @@ def variant_parser(args):
                                 
                         if len(hethoms)>0:
                             cadd_phred = get_CADD(chrom, variant.POS, variant.REF, alt, compliments, cadd_tabix, cadd_indels_tabix)
-                            spliceai = get_spliceai(chrom, variant.POS, variant.REF, alt, compliments, spliceai_tabix, spliceai_indels_tabix)
+                            spliceai = get_spliceai(chrom, variant.POS, variant.REF, alt, compliments, spliceai_tabix)
                             revel = get_REVEL(chrom, variant.POS, variant.REF, alt, compliments, revel_tabix)
                             varity = get_VARITY(chrom, variant.POS, variant.REF, alt, compliments, varity_tabix)
-                            gnomad_nhomalt = get_gnomad_nhomalt(chrom, variant.POS, variant.REF, alt, compliments, gnomad_tabix)
 
                             for i in hethoms:
                                 pop, child_inh, parent_inh = get_inh(samples_pop_inds, parents, ped, samples, gt_types, variant, i)
@@ -149,5 +143,5 @@ def variant_parser(args):
                                         i if i in ped else 'NA',[var if var!=3 else 'NA' for var in gt_types[np.where(np.isin(samples,ped[i][1]))]][0] if i in ped else 'NA',
                                         child_inh, parent_inh, sum(gt_types[np.where(np.isin(samples,parents))[0]]==2),worst_vep_csq['VARIANT_CLASS'],
                                         str(variant.CHROM)+':'+str(variant.POS)+'_'+variant.REF+'_'+alt,worst_csq_cat, worst_vep_csq['Consequence'] ,vep_csq_cat,vep_csq['Consequence'], gene, gene_symbols[gene][0], gene_symbols[gene][1],variant.CHROM, 
-                                        variant.POS,variant.REF, alt] + list(af_pop.values()) + gnomad_af +[gnomad_nhomalt, pop]+[sum(gt_types[unrelated_parents_pop_index[pop]]!=3) for pop in populations]+ 
+                                        variant.POS,variant.REF, alt] + list(af_pop.values()) + gnomad_af +[pop]+[sum(gt_types[unrelated_parents_pop_index[pop]]!=3) for pop in populations]+ 
                                         [cadd_phred, vep_csq['LoF'], revel, varity[0],varity[1],vep_csq['PolyPhen'], spliceai]])
