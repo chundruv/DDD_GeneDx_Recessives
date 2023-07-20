@@ -1,0 +1,2 @@
+Gene	Variant_class	Population	Individual_ID	Variant_ID	Genotype
+ENSG00000133055	missense/missense	SAS4	DDDP130737	1:203144473_C_G	2
