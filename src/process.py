@@ -2,10 +2,7 @@ import pandas as pd
 import csv
 import numpy as np
 
-def get_stable_ids(id_map, sample_id):
-    return id_map[id_map['vcf_id']==sample_id]['person_stable_id'].tolist()[0]
-
-def process_ped(pop, unaffectedpar_path, unrelpar_path, ped_path, samples):
+def process_ped(pop, unrelpar_path, ped_path, samples):
     
     population_assignment = pd.read_csv(pop,sep=" ", header=None, low_memory=False)
     population_assignment.columns = ['sample_id', 'superpop', 'subpop']
@@ -13,10 +10,8 @@ def process_ped(pop, unaffectedpar_path, unrelpar_path, ped_path, samples):
     samples_pop={pop:population_assignment[population_assignment['subpop']==pop]['sample_id'].tolist() for pop in populations}
     samples_pop_inds={population_assignment.iloc[i,0]:population_assignment.iloc[i,2] for i in range(population_assignment.shape[0])}
 
-    unaffected_parents=pd.read_csv(unaffectedpar_path, header=None, sep=r'\s+', low_memory=False)
     unrelated_parents=pd.read_csv(unrelpar_path, header=None, sep=r'\s+', low_memory=False)
-    unaffected_parents_pops_df=pd.merge(population_assignment, unaffected_parents[1], left_on='sample_id', right_on=1)
-    unrelated_parents_pops_df=pd.merge(unaffected_parents_pops_df, unrelated_parents, left_on='sample_id', right_on=1)
+    unrelated_parents_pops_df=pd.merge(population_assignment, unrelated_parents[0], left_on='sample_id', right_on=0)
     unrelated_parents_pops={pop:unrelated_parents_pops_df[unrelated_parents_pops_df['subpop']==pop].iloc[:,0].tolist() for pop in populations}
 
     ped_df=pd.read_csv(ped_path, sep='\t', dtype='str')
@@ -31,7 +26,7 @@ def process_ped(pop, unaffectedpar_path, unrelpar_path, ped_path, samples):
     for pop in populations:
         unrelated_parents_pop_index[pop] = np.where(np.isin(samples,unrelated_parents_pops[pop]))[0]
     
-    return (ped, parents, unaffected_parents[1].tolist(), samples_pop, samples_pop_inds, unrelated_parents_pop_index, populations)
+    return (ped, parents, samples_pop, samples_pop_inds, unrelated_parents_pop_index, populations)
 
 def store_gts(variant, variant_genotypes, an):
     vcf_AF = [variant.INFO.get('AF')] if isinstance(variant.INFO.get('AF'), float) else list(variant.INFO.get('AF'))
