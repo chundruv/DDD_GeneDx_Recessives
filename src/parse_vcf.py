@@ -21,8 +21,8 @@ def variant_parser(args):
     Input args:
         vcf =   The input vcf file. Either vcf.gz or bcf; index is required
         g2p =   DDG2P genes file downloaded from DECIPHER (https://www.ebi.ac.uk/gene2phenotype/downloads/DDG2P.csv.gz)
-        pop =   Populations assignment file. Columns: "ID1 ID2 Pop" - For DDD ID1=stable ID, ID2=VCF ID. For GeneDx put same ID in both
-        unrelpar    =   unrelated unaffected parents list. Columns "ID1 ID2" (ID1 and ID2 same as above) 
+        pop =   Populations assignment file. Columns: "ID Pop"
+        unrelpar    =   unrelated unaffected parents list
         gen =   gene position file downloaded from biomart; required columns: 'HGNC symbol', 'Chromosome/scaffold name', 'Gene start (bp)', 'Gene end (bp)'
         ped =   family PED file; required columns: Family ID, Individual ID, Dad ID, Mum ID, Sex, Affected status
         cadd    =   SNV CADD file (https://cadd.gs.washington.edu/download)
@@ -33,8 +33,6 @@ def variant_parser(args):
         varity  =   VARITY file bgzipped and tabix indexed (http://varity.varianteffect.org/downloads/varity_all_predictions.tar.gz)
         gmd =   gnomAD exomes v2 allele frequency file (https://gnomad.broadinstitute.org/downloads)
         gmd_genomes = gnomAD genomes v2 allele frequency file (https://gnomad.broadinstitute.org/downloads)
-        mcg =   gene missense constraint file (not sure where this is from, I got it from Joanna Kaplanis)
-        mcr =   missesne constraint regions file (https://storage.googleapis.com/gcp-public-data--gnomad/legacy/exac_browser/regional_missense_constraint.tsv)
         pli =   pLI scores (https://storage.googleapis.com/gcp-public-data--gnomad/legacy/exac_browser/forweb_cleaned_exac_r03_march16_z_data_pLI_CNV-final.txt.gz)
         snv_qc = QC thresholds for SNVs format= GQ,DP,P(AB),VQSLOD,FPASS
         indel_qc = QC thresholds for indels format= GQ,DP,AB,VQSLOD,FPASS
@@ -78,7 +76,7 @@ def variant_parser(args):
     csv_header=['stable_id','genotype','is_proband','child_id','child_genotype','dad_id','dad_genotype','mum_id','mum_genotype','child_inheritance','parent_inheritance','n_unaffected_homalt','variant_class',
             'variant_id','worst_vep_annotation_category','worst_vep_annotation','canonical_vep_annotation_category','canonical_vep_annotation','gene.stable.id', 'gene.name', 'HGNC.symbol','chrom','position','ref',
             'alt']+[pop+'_unrelated_parents_popents_af' for pop in populations]+['gnomAD2.1_AFR','gnomAD2.1_AMR','gnomAD2.1_EAS','gnomAD2.1_FIN','gnomAD2.1_NFE','gnomAD2.1_SAS','gnomAD2.1_ASJ',
-            'gnomad2.1_nhomalt','population']+['n_unrelated_parents_'+pop for pop in populations]+['CADD_phred','LOFTEE','MPC','REVEL','PrimateAI','VARITYR_LOO','VARITYER_LOO','PolyPhen', 'spliceai']
+            'gnomad2.1_nhomalt','population']+['n_unrelated_parents_'+pop for pop in populations]+['CADD_phred','LOFTEE','REVEL','VARITYR_LOO','VARITYER_LOO','PolyPhen', 'spliceai']
 
     if os.path.exists(args.outdir)==False:
 	    os.makedirs(args.outdir)
@@ -136,9 +134,7 @@ def variant_parser(args):
                         if len(hethoms)>0:
                             cadd_phred = get_CADD(chrom, variant.POS, variant.REF, alt, compliments, cadd_tabix, cadd_indels_tabix)
                             spliceai = get_spliceai(chrom, variant.POS, variant.REF, alt, compliments, spliceai_tabix, spliceai_indels_tabix)
-                            mpc = get_MPC(chrom, variant.POS, variant.REF, alt, compliments, mpc_tabix)
                             revel = get_REVEL(chrom, variant.POS, variant.REF, alt, compliments, revel_tabix)
-                            primateai = get_PrimateAI(chrom, variant.POS, variant.REF, alt, compliments, primateai_tabix)
                             varity = get_VARITY(chrom, variant.POS, variant.REF, alt, compliments, varity_tabix)
                             gnomad_nhomalt = get_gnomad_nhomalt(chrom, variant.POS, variant.REF, alt, compliments, gnomad_tabix)
 
@@ -154,4 +150,4 @@ def variant_parser(args):
                                         child_inh, parent_inh, sum(gt_types[np.where(np.isin(samples,parents))[0]]==2),worst_vep_csq['VARIANT_CLASS'],
                                         str(variant.CHROM)+':'+str(variant.POS)+'_'+variant.REF+'_'+alt,worst_csq_cat, worst_vep_csq['Consequence'] ,vep_csq_cat,vep_csq['Consequence'], gene, gene_symbols[gene][0], gene_symbols[gene][1],variant.CHROM, 
                                         variant.POS,variant.REF, alt] + list(af_pop.values()) + gnomad_af +[gnomad_nhomalt, pop]+[sum(gt_types[unrelated_parents_pop_index[pop]]!=3) for pop in populations]+ 
-                                        [cadd_phred, vep_csq['LoF'], mpc, revel, primateai,varity[0],varity[1],vep_csq['PolyPhen'], spliceai]])
+                                        [cadd_phred, vep_csq['LoF'], revel, varity[0],varity[1],vep_csq['PolyPhen'], spliceai]])
