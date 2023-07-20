@@ -15,7 +15,9 @@ def init_tabix(args):
     revel_tabix = tabix.open(args.revel)
     varity_tabix = tabix.open(args.varity)
     spliceai_tabix = tabix.open(args.spliceai)
-    return (cadd_tabix, cadd_indels_tabix, revel_tabix, varity_tabix, spliceai_tabix)
+    clinpred_tabix = tabix.open(args.clinpred)
+    moipred_tabix = tabix.open(args.moipred)
+    return (cadd_tabix, cadd_indels_tabix, revel_tabix, varity_tabix, spliceai_tabix, clinpred_tabix, moipred_tabix)
     
 def get_CADD(chrom, pos, ref, alt, compliments, cadd_tabix, cadd_indels_tabix):
     """
@@ -101,3 +103,21 @@ def get_VARITY(chrom, pos, ref, alt, compliments, varity_tabix):
             if ((alt2==alt1) & (ref2==ref1)) or ((ref2==alt1) & (alt2==ref1)):
                 return [var[10],var[11]]
     return ['','']
+
+def get_clinpred(chrom, pos, ref, alt, compliments, clinpred_tabix):
+    for var in clinpred_tabix.query(str(chrom).replace("chr",""), pos-1, pos):
+        pos1, ref1, alt1 = get_minimal_representation(pos, ref, alt)
+        pos2, ref2, alt2 = get_minimal_representation(var[1], var[2], var[3])
+        if pos1==pos2:
+            if ((alt2==alt1) & (ref2==ref1)) or ((ref2==alt1) & (alt2==ref1)):
+                return var[4]
+    return ''
+
+def get_moipred(chrom, pos, ref, alt, compliments, moipred_tabix):
+    for var in moipred_tabix.query(str(chrom).replace("chr",""), pos-1, pos):
+        pos1, ref1, alt1 = get_minimal_representation(pos, ref, alt)
+        pos2, ref2, alt2 = get_minimal_representation(var[1], var[2], var[3])
+        if pos1==pos2:
+            if ((alt2==alt1) & (ref2==ref1)) or ((ref2==alt1) & (alt2==ref1)):
+                return var[7]
+    return ''
