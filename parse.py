@@ -30,11 +30,6 @@ if __name__ == "__main__":
             required = True,
             help = 'gene position file')
     required.add_argument(
-            '--idmap',
-            type = str,
-            required = True,
-            help = 'sample ID map file')
-    required.add_argument(
             '--ped',
             type = str,
             required = True,
