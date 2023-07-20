@@ -1,6 +1,7 @@
 import pandas as pd
 import csv
 import argparse
+import os
 from src.read_and_filter_data import read_file
 from src.call_comphets import call_comphets
 from src.genes_positions import get_gene_pos
@@ -65,30 +66,15 @@ parseargs.add_argument(
         required = True,
         help = 'File of unrelated proband IDs')
 parseargs.add_argument(
-        '--unrel_parents',
+        '--unrel_unaff_parents',
         type = str,
         required = True,
-        help = 'File of unrelated parent IDs')
-parseargs.add_argument(
-        '--unaff_parents',
-        type = str,
-        required = True,
-        help = 'File of unaffected parent IDs')
+        help = 'File of unrelated unaffected parent IDs')
 parseargs.add_argument(
         '--idmap',
         type = str,
         required = False,
-        help = 'Map IDs from VCF/parse output to pedigree IDs')    
-parseargs.add_argument(
-        '--qcfail',
-        type = str,
-        required = True,
-        help = 'File of individual IDs who fail QC')
-parseargs.add_argument(
-        '--skipGenes',
-        type = str,
-        required = False,
-        help = 'List of genes to skip')
+        help = 'Map IDs from VCF/parse output to pedigree IDs; no header, format: VCF_ID\tPED_ID')
 
 missense_filters = parser.add_argument_group('Change missense filtering thresholds - optional')
 missense_filters.add_argument(
@@ -144,11 +130,7 @@ args = parser.parse_args()
 x, parents_populations, probands_populations, populations, N_haps, N_probands, unrel_parents, unrel_probands = read_file(args)
 gene_pos, not_used = get_gene_pos(args.genepos, args.chrom, args.g1, args.g2)
 
-if args.skipGenes==None:
-    genes=x['gene.stable.id'].unique()
-else:
-    skipgenes=pd.read_csv(args.skipGenes, header=None)
-    genes=[g for g in x['gene.stable.id'].unique() if g not in skipgenes[0].tolist()]
+genes=x['gene.stable.id'].unique()
 
 chets = call_comphets(x, genes)
 
@@ -161,6 +143,13 @@ lmbda, lmbda1 = calc_expected(x, lds, genes, classes, parents_populations, popul
 
 OB, varIDs = calc_obs(x, unrel_parents, unrel_probands, populations, consequence_classes, genes, probands_populations, chets)
 
+if os.path.exists(args.output_dir)==False:
+	os.makedirs(args.output_dir)
+if os.path.exists(args.output_dir+'/parts')==False:
+	os.makedirs(args.output_dir+'/parts')
+if os.path.exists(args.output_dir+'/vars')==False:
+	os.makedirs(args.output_dir+'/vars')
+	
 with open(args.output_dir+'/parts/chr'+str(args.chrom)+'_'+str(args.g1)+'_'+str(args.g2)+'.txt', 'w') as write_file:
     csvwrite=csv.writer(write_file, delimiter='\t')
     csvwrite.writerow(['Gene', 'Variant_class', 'Population', 'LD_thinning_r2', 'Observed_biallelic_genotypes', 'N_probands', 'N_parents', 'Expected_freq_biallelic_genotypes', 'corrected_Expected_freq_biallelic_genotypes'])
