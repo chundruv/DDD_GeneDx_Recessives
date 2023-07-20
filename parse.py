@@ -60,16 +60,6 @@ if __name__ == "__main__":
             required = True,
             help = 'REVEL file bgzipped and tabix indexed')
     required.add_argument(
-            '--mpc',
-            type = str,
-            required = True,
-            help = 'Variant MPC file')
-    required.add_argument(
-            '--primateai',
-            type = str,
-            required = True,
-            help = 'PrimateAI file bgzipped and tabix indexed')
-    required.add_argument(
             '--varity',
             type = str,
             required = True,
