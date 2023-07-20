@@ -62,11 +62,11 @@ def variant_parser(args):
     # SNV QC - DDD GQ>20, DP>7, P(AB)>1e-3, VQSLOD>-2, FPASS>0.5
     # SNV QC - GeneDx GQ>25, DP>10, P(AB)>1e-3, VQSLOD>-2.5, FPASS>0.7 
     # combination_snv = [20,7,1e-3,-2,0.5]
-    combination_snv = args.snv_qc.split(',')
+    combination_snv = [float(i) for i in args.snv_qc.split(',')]
     # INDEL QC - DDD GQ>20, DP>7, AB>0.2, No VQSLOD, FPASS>0.5
     # INDEL QC - GeneDx GQ>30, DP>7, AB>0.3, No VQSLOD, FPASS>0.7
     # combination_indel = [20,7,0.2,-1000,0.5]
-    combination_indel = args.indel_qc.split(',')
+    combination_indel = [float(i) for i in args.indel_qc.split(',')]
 
     csv_header=['stable_id','genotype','is_proband','child_id','child_genotype','dad_id','dad_genotype','mum_id','mum_genotype','child_inheritance','parent_inheritance','n_unaffected_homalt','variant_class',
             'variant_id','worst_vep_annotation_category','worst_vep_annotation','canonical_vep_annotation_category','canonical_vep_annotation','gene.stable.id', 'gene.name', 'HGNC.symbol','chrom','position','ref',

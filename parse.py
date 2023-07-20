@@ -60,6 +60,16 @@ if __name__ == "__main__":
             required = True,
             help = 'chromosome number')
     required.add_argument(
+            '--snv-qc',
+            type = str,
+            required = True,
+            help = 'SNV QC thresholds, comma-seperated list - GQ,DP,P(AB),VQSLOD,FPASS ')
+    required.add_argument(
+            '--indel-qc',
+            type = str,
+            required = True,
+            help = 'Indel QC thresholds, comma-seperated list - GQ,DP,AB,VQSLOD,FPASS ')
+    required.add_argument(
             '--g1',
             type = str,
             required = True,
