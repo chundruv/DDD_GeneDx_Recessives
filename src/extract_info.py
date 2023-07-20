@@ -12,14 +12,12 @@ def init_tabix(args):
     """
     cadd_tabix = tabix.open(args.cadd)
     cadd_indels_tabix = tabix.open(args.cadd_indels)
-    mpc_tabix = tabix.open(args.mpc)
     gnomad_tabix = tabix.open(args.gmd)
     revel_tabix = tabix.open(args.revel)
-    primateai_tabix = tabix.open(args.primateai)
     varity_tabix = tabix.open(args.varity)
     spliceai_tabix = tabix.open(args.spliceai)
     spliceai_indels_tabix = tabix.open(args.spliceai_indels)
-    return (cadd_tabix, cadd_indels_tabix, mpc_tabix, gnomad_tabix, revel_tabix, primateai_tabix, varity_tabix, spliceai_tabix, spliceai_indels_tabix)
+    return (cadd_tabix, cadd_indels_tabix, gnomad_tabix, revel_tabix, varity_tabix, spliceai_tabix, spliceai_indels_tabix)
     
 def get_CADD(chrom, pos, ref, alt, compliments, cadd_tabix, cadd_indels_tabix):
     """
@@ -89,27 +87,6 @@ def get_REVEL(chrom, pos, ref, alt, compliments, revel_tabix):
                 return var[7]
     return ''
 
-def get_PrimateAI(chrom, pos, ref, alt, compliments, primateai_tabix):
-    """
-    Pull out the PrimateAI score for the relevant position
-    Args:
-        chrom (int): Chromosome
-        pos (int): Base pair position
-        ref (str): Reference allele
-        alt (str): Alternate allele
-        compliments (dict): Dictionary of compliment alleles
-        primateai_tabix (tabix instance): PrimateAI tabix instance
-    Returns:
-        float: PrimateAI score
-    """
-    for var in primateai_tabix.query('chr'+str(chrom).replace("chr",""), pos-1, pos):
-        pos1, ref1, alt1 = get_minimal_representation(pos, ref, alt)
-        pos2, ref2, alt2 = get_minimal_representation(var[1], var[2], var[3])
-        if pos1==pos2:
-            if ((alt2==alt1) & (ref2==ref1)) or ((ref2==alt1) & (alt2==ref1)):
-                return var[10]
-    return ''
-
 def get_VARITY(chrom, pos, ref, alt, compliments, varity_tabix):
     """
     Pull out the VARITY score for the relevant position
@@ -130,27 +107,6 @@ def get_VARITY(chrom, pos, ref, alt, compliments, varity_tabix):
             if ((alt2==alt1) & (ref2==ref1)) or ((ref2==alt1) & (alt2==ref1)):
                 return [var[10],var[11]]
     return ['','']
-
-def get_MPC(chrom, pos, ref, alt, compliments,mpc_tabix):
-    """
-    Pull out the MPC score for the relevant position
-    Args:
-        chrom (int): Chromosome
-        pos (int): Base pair position
-        ref (str): Reference allele
-        alt (str): Alternate allele
-        compliments (dict): Dictionary of compliment alleles
-        mpc_tabix (tabix instance): MPC tabix instance
-    Returns:
-        float: MPC score
-    """
-    for var in mpc_tabix.query(str(chrom).replace("chr",""), pos-1, pos):
-        pos1, ref1, alt1 = get_minimal_representation(pos, ref, alt)
-        pos2, ref2, alt2 = get_minimal_representation(var[1], var[2], var[3])
-        if pos1==pos2:
-            if ((alt2==alt1) & (ref2==ref1)) or ((ref2==alt1) & (alt2==ref1)):
-                return var[18]
-    return ''
 
 def get_gnomad_nhomalt(chrom, pos, ref, alt, compliments, gnomad_tabix):
     """
