@@ -9,7 +9,7 @@ def read_sample_lists(args):
     * args
     output:
     * unrel_probands - list of unrelated probands
-    * unrel_parents - list of unrelated parents
+    * unrel_parents - list of unrelated unaffected parents
     * parents_populations - dataframe of unrelated parents and the population assignments
     * probands_populations - dataframe of unrelated probands and the population assignments
     * population_table - all population assignments
@@ -18,14 +18,6 @@ def read_sample_lists(args):
     unrel_probands[0]=unrel_probands[0].astype('str')
     unrel_parents=pd.read_table(args.unrel_parents, header=None, sep=r'\s+')
     unrel_parents[0]=unrel_parents[0].astype('str')
-    unaffected_parents=pd.read_table(args.unaff_parents, header=None, sep=r'\s+')
-    unaffected_parents[0]=unaffected_parents[0].astype('str')
-    fail_qc=pd.read_table(args.qcfail, header=None, sep=r'\s+')
-    fail_qc[0]=fail_qc[0].astype('str')
-
-    unrel_parents=pd.merge(unrel_parents[0], unaffected_parents[0])
-    unrel_parents=unrel_parents[np.isin(unrel_parents[0], fail_qc[0])==False]
-    unrel_probands=unrel_probands[np.isin(unrel_probands[0], fail_qc[0])==False]
 
     pedigree=pd.read_csv(args.pedfile, sep=r'\s+', dtype=str)
     pedigree=pedigree.iloc[:,range(0,6)]
@@ -46,7 +38,7 @@ def read_and_filter_data(args, unrel_parents, population_table):
     read in output from parse.py with the hets and hom-alts
     input:
     * args
-    * unrel_parents - list of unrelated parents
+    * unrel_parents - list of unrelated unaffected parents
     * population_table - dataframe of population assignments
     output:
     * x - dataframe of genotypes of interest
@@ -149,12 +141,12 @@ def read_file(args):
     * args
     output:
     * x - filtered dataframe of genotypes of interest
-    * parents_populations - dataframe of unrelated parents and their population assignments
+    * parents_populations - dataframe of unrelated unaffected parents and their population assignments
     * probands_populations - dataframe of unrelated probands and their population assignments
     * populations - list of populations in the data
     * N_haps - number of unrelated parent haplotypes = 2*number of unrelated parents
     * N_probands - number of unrelated probands
-    * unrel_parents - list of unrelated parents
+    * unrel_parents - list of unrelated unaffected parents
     * unrel_probands - list of unrelated probands
     """
     unrel_probands, unrel_parents, parents_populations, probands_populations, population_table = read_sample_lists(args)
