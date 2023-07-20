@@ -20,11 +20,6 @@ if __name__ == "__main__":
             required = True,
             help = 'unrelated parents list')
     required.add_argument(
-            '--unaffectedpar',
-            type = str,
-            required = True,
-            help = 'unaffected parents list')
-    required.add_argument(
             '--gen',
             type = str,
             required = True,
@@ -50,11 +45,6 @@ if __name__ == "__main__":
             required = True,
             help = 'SNV spliceai file')
     required.add_argument(
-            '--spliceai-indels',
-            type = str,
-            required = True,
-            help = 'Indels spliceai file')
-    required.add_argument(
             '--revel',
             type = str,
             required = True,
@@ -64,11 +54,6 @@ if __name__ == "__main__":
             type = str,
             required = True,
             help = 'VARITY file bgzipped and tabix indexed')
-    required.add_argument(
-            '--gmd',
-            type = str,
-            required = True,
-            help = 'Gnomad vcf file')
     required.add_argument(
             '--chr',
             type = str,

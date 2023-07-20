@@ -12,12 +12,10 @@ def init_tabix(args):
     """
     cadd_tabix = tabix.open(args.cadd)
     cadd_indels_tabix = tabix.open(args.cadd_indels)
-    gnomad_tabix = tabix.open(args.gmd)
     revel_tabix = tabix.open(args.revel)
     varity_tabix = tabix.open(args.varity)
     spliceai_tabix = tabix.open(args.spliceai)
-    spliceai_indels_tabix = tabix.open(args.spliceai_indels)
-    return (cadd_tabix, cadd_indels_tabix, gnomad_tabix, revel_tabix, varity_tabix, spliceai_tabix, spliceai_indels_tabix)
+    return (cadd_tabix, cadd_indels_tabix, revel_tabix, varity_tabix, spliceai_tabix)
     
 def get_CADD(chrom, pos, ref, alt, compliments, cadd_tabix, cadd_indels_tabix):
     """
@@ -50,13 +48,9 @@ def get_CADD(chrom, pos, ref, alt, compliments, cadd_tabix, cadd_indels_tabix):
                 return var[5]
     return ''
 
-def get_spliceai(chrom, pos, ref, alt, compliments, spliceai_tabix, spliceai_indels_tabix):
+def get_spliceai(chrom, pos, ref, alt, compliments, spliceai_tabix):
     pos1, ref1, alt1 = get_minimal_representation(pos, ref, alt)
-    size=abs(len(ref1)-len(alt1))
-    if size>0:
-        tabix = spliceai_indels_tabix
-    else:
-        tabix = spliceai_tabix
+    tabix = spliceai_tabix
     for var in tabix.query(str(chrom).replace("chr",""), pos-1, pos):
         pos1, ref1, alt1 = get_minimal_representation(pos, ref, alt)
         pos2, ref2, alt2 = get_minimal_representation(var[1], var[3], var[4])
@@ -107,29 +101,3 @@ def get_VARITY(chrom, pos, ref, alt, compliments, varity_tabix):
             if ((alt2==alt1) & (ref2==ref1)) or ((ref2==alt1) & (alt2==ref1)):
                 return [var[10],var[11]]
     return ['','']
-
-def get_gnomad_nhomalt(chrom, pos, ref, alt, compliments, gnomad_tabix):
-    """
-    Pull out the number of homalt genotypes in gnomAD for the relevant position
-    Args:
-        chrom (int): Chromosome
-        pos (int): Base pair position
-        ref (str): Reference allele
-        alt (str): Alternate allele
-        compliments (dict): Dictionary of compliment alleles
-        gnomad_tabix (tabix instance): gnomAD tabix instance
-    Returns:
-        int: number of gnomAD homalts
-    """
-    for var in gnomad_tabix.query(str(chrom).replace("chr",""), pos-1, pos):
-        pos1, ref1, alt1 = get_minimal_representation(pos, ref, alt)
-        pos2, ref2, alt2 = get_minimal_representation(var[1], var[3], var[4])
-        if pos1==pos2:
-            if ((alt2==alt1) & (ref2==ref1)) or ((ref2==alt1) & (alt2==ref1)):
-                nhomalt = int(var[7].split(';')[int(np.where(np.isin([i.split('=')[0] for i in var[7].split(';')],'nhomalt'))[0])].split('=')[1])
-                #ac = int(var[7].split(';')[int(np.where(np.isin([i.split('=')[0] for i in var[7].split(';')],'AC'))[0])].split('=')[1])
-                #if ac>0:
-                return nhomalt#/ac
-#                else:
-#                    return 0
-    return ''
