@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 def calc_expected(x, lds, genes, classes, parents_populations, populations, N_haps, a, consequence_classes, unrel_parents):
-    x=x[(np.isin(x['individual_id'], unrel_parents[0].tolist())) | (x['is_proband']==True)]
+    x=x[(np.isin(x['individual_id'], unrel_parents.tolist())) | (x['is_proband']==True)]
     h={c:{gene:{pop:0 for pop in populations} for gene in genes} for c in classes}
 
     for gene in genes:

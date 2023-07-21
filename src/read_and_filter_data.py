@@ -22,8 +22,8 @@ def read_sample_lists(args):
     pedigree=pd.read_csv(args.pedfile, sep='\t', dtype=str)
     pedigree=pedigree.iloc[:,range(0,6)]
     pedigree.columns=["family_id", "individual_id", "dad_id", "mum_id", "sex", "affected"]
-    unrel_probands=pd.merge(unrel_probands[0], pedigree['individual_id'], left_on=0, right_on='individual_id')[[0]]
-    unrel_parents=pd.concat([pd.merge(unrel_parents[0], pedigree['dad_id'], left_on=0, right_on='dad_id')[0], pd.merge(unrel_parents[0], pedigree['mum_id'], left_on=0, right_on='mum_id')[0]])
+    unrel_probands=pd.merge(unrel_probands[0], pedigree['individual_id'].drop_duplicates(), left_on=0, right_on='individual_id')[[0]]
+    unrel_parents=pd.concat([pd.merge(unrel_parents[0], pedigree['dad_id'].drop_duplicates(), left_on=0, right_on='dad_id')[0], pd.merge(unrel_parents[0], pedigree['mum_id'].drop_duplicates(), left_on=0, right_on='mum_id')[0]])
     population_table=pd.read_csv(args.popfile, header=None, sep='\t')
     population_table.columns=['individual_id','pop', 'subpop']
     population_table['individual_id']=population_table['individual_id'].astype('str')
@@ -58,7 +58,7 @@ def read_and_filter_data(args, unrel_parents, population_table):
 
     x=x[( ((x['is_proband']==True) & (x['dad_genotype'].isna()==False) & (x['mum_genotype'].isna()==False)) | ((x['is_proband']==False) & (x['child_genotype'].isna()==False)) )]
     x['size']=x['ref'].str.len() - x['alt'].str.len()
-    x=pd.concat([x[x['is_proband']==True], pd.merge(x[x['is_proband']==False], unrel_parents, left_on='individual_id', right_on=0)[x.columns]])
+#    x=pd.concat([x[x['is_proband']==True], pd.merge(x[x['is_proband']==False], unrel_parents, left_on='individual_id', right_on=0)[x.columns]])
     return(x)
 
 def consequence_filtering(x, cadd_filter, cadd_indel_filter, revel_filter, varity_filter, moipred_filter, clinpred_filter, polyphen_filter, synsplice_filter):
