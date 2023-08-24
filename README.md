@@ -16,6 +16,8 @@ The other required files are:
 * ClinPred file (https://sites.google.com/site/clinpred/download?authuser=0)
 * MOIPred file (https://doi.org/10.5281/zenodo.5620519)
 
+If you don't want to annotate with all of these then you can tweak the code to remove them, or if they are all annotated in the VEP string you can remove the annotation steo and get them from the VEP
+
 ## Running analysis
 The code is set up to run in three steps.
 
