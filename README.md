@@ -54,6 +54,8 @@ You will need:
 * list of unrelated probands
 * ROHs output from bcftools-roh (No header, columns: "RG", Sample, Chromosome, Start, End, Length(bp), Number of markers, Quality)
 
+To run, edit the paths within and run `./variants.sh`
+
 The output will be in two folders, parts/ and vars/
 parts/ will have the observed and expected for each gene in the chunk of the genome analysed, each population, LD R2 pruning for ROH calling, and variant class
 vars/ has the observed biallelic variants
