@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python parse.py --vcf ~/vcfs_ddd/1.bcf \
+python parse_vcfs.py --vcf ~/vcfs_ddd/1.bcf \
 --pop test/population_table.txt \
 --gen data/gene_pos.txt.gz \
 --ped test/pedigree.ped \
