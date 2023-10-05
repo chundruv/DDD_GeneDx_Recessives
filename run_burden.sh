@@ -1,4 +1,4 @@
-python variants.py \
+python burden_test.py \
     --chrom 1 \
     --g1 1 \
     --g2 10 \
