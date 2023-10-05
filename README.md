@@ -32,7 +32,7 @@ You will need:
 * QC metrics to use (If genotypes not passing QC are already masked and variants removed, you can put 0,0,0,-1000,0 for both QC thresholds)
 * all the metrics listed above (CADD, REVEL, etc.)
 
-Edit the paths within and run `./parse.sh`
+Edit the paths within and run `./parse_vcfs.sh`
 
 The output should have the header (or similar):
 
@@ -54,7 +54,7 @@ You will need:
 * list of unrelated probands
 * ROHs output from bcftools-roh (No header, columns: "RG", Sample, Chromosome, Start, End, Length(bp), Number of markers, Quality)
 
-To run, edit the paths within and run `./variants.sh`
+To run, edit the paths within and run `./burden_test.sh`
 
 The output will be in two folders, parts/ and vars/
 parts/ will have the observed and expected for each gene in the chunk of the genome analysed, each population, LD R2 pruning for ROH calling, and variant class
