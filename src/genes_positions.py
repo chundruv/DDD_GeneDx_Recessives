@@ -15,10 +15,10 @@ def get_gene_pos(gen_path, chrom, g1, g2):
     """
     gen=pd.read_csv(gen_path, sep='\t')
 
-    gen=gen[(gen['Chromosome/scaffold name']==int(chrom))]
+    gen=gen[(gen['Chromosome.scaffold.name']==int(chrom))]
     
-    gen.loc[:,'pos']=gen['Chromosome/scaffold name'].astype(str)+':'+gen['Gene start (bp)'].astype(str)+'-'+gen['Gene end (bp)'].astype(str)
+    gen.loc[:,'pos']=gen['Chromosome.scaffold.name'].astype(str)+':'+gen['Gene start (bp)'].astype(str)+'-'+gen['Gene end (bp)'].astype(str)
 
-    genes = gen['Gene stable ID'].unique()[int(g1):int(g2)+1]
+    genes = gen['Gene.stable.ID'].unique()[int(g1):int(g2)+1]
 
-    return [{i:gen[gen['Gene stable ID']==i]['pos'].tolist()[0] for i in genes}, {i:[gen[gen['Gene stable ID']==i]['Gene name'].tolist()[0], gen[gen['Gene stable ID']==i]['HGNC symbol'].tolist()[0]] for i in genes}]
+    return [{i:gen[gen['Gene.stable.ID']==i]['pos'].tolist()[0] for i in genes}, {i:[gen[gen['Gene.stable.ID']==i]['Gene.name'].tolist()[0], gen[gen['Gene stable ID']==i]['HGNC.symbol'].tolist()[0]] for i in genes}]
