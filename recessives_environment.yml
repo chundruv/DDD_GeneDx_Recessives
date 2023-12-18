@@ -44,4 +44,4 @@ dependencies:
     - sorted-nearest==0.0.39
     - tabulate==0.9.0
     - tzdata==2023.3
-prefix: /nfs/users/nfs_k/kc18/.conda/envs/recessives
+prefix: recessives

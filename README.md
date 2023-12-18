@@ -16,7 +16,7 @@ The other required files are:
 * ClinPred file (https://sites.google.com/site/clinpred/download?authuser=0)
 * MOIPred file (https://doi.org/10.5281/zenodo.5620519)
 
-If you don't want to annotate with all of these then you can tweak the code to remove them, or if they are all annotated in the VEP string you can remove the annotation steo and get them from the VEP
+If you don't want to annotate with all of these then you can tweak the code to remove them, or if they are all annotated in the VEP string you can remove the annotation step and get them from the VEP
 
 ## Running analysis
 The code is set up to run in three steps.
@@ -40,25 +40,25 @@ The output should have the header (or similar):
 
 ### Step 2
 
-The second step applies filters the variants and calls compound heterozygous variants. Using these and the ROHs called in the sample we run a burden test for the following variant classes:
-LoF/LoF - loss of function biallelic
-LoF/Functional - loss of function - functional compound heterzygous variants
-Functional/Functional - functional biallelic variants
-Synonymous/Synonymous - synonymous biallelic variants
+The second step applies variant filters and calls compound heterozygous variants. Using these and the ROHs called in the sample we run a burden test for the following variant classes:
+* LoF/LoF - loss of function biallelic
+* LoF/Functional - loss of function - functional compound heterzygous variants
+* Functional/Functional - functional biallelic variants
+* Synonymous/Synonymous - synonymous biallelic variants
 
 You will need:
 * output from Step 1
 * population table (same as from Step 1)
-* pedigree 
-* list of unrelated, unaffected parents
+* pedigree (same as from Step 1) 
+* list of unrelated, unaffected parents (same as from Step 1)
 * list of unrelated probands
 * ROHs output from bcftools-roh (No header, columns: "RG", Sample, Chromosome, Start, End, Length(bp), Number of markers, Quality)
 
 To run, edit the paths within and run `./burden_test.sh`
 
 The output will be in two folders, parts/ and vars/
-parts/ will have the observed and expected for each gene in the chunk of the genome analysed, each population, LD R2 pruning for ROH calling, and variant class
-vars/ has the observed biallelic variants
+* parts/ will have the observed and expected number of biallelic genotypes per person for each gene, population, LD R2 pruning for ROH calling, and variant class.
+* vars/ will have the observed biallelic variants
 
 ### Step 3
 
