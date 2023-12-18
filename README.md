@@ -6,7 +6,7 @@ This repository contains code to perform recessive burden testing as seen in Chu
 
 The code requires a number of python packages. The easiest way to install all is to use the recessives_environment.yml:
 
-`conda create -f recessives_environment.yml`
+`conda env create -f recessives_environment.yml`
 
 The other required files are:
 * CADD SNV and indel files (https://cadd.gs.washington.edu/download)
