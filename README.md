@@ -29,7 +29,7 @@ You will need:
 * pedigree file (tab delimited with header: "family_id	individual_id	dad_id	mum_id	sex	affected")
 * population table (tab delimited no header, columns - ID, GIA-group, GIA-subgroup)
 * list of unrelated, unaffected parents
-* QC metrics to use (Fomart = [ GQ, DP, P(AB), VQSLOD, FPASS ]. If genotypes not passing QC are already masked and variants removed, you can put 0,0,0,-1000,0 for both QC thresholds)
+* QC metrics to use (Format = [ GQ, DP, P(AB), VQSLOD, FPASS ]. If genotypes not passing QC are already masked and variants removed, you can put 0,0,0,-1000,0 for both QC thresholds)
 * all the metrics listed above (CADD, REVEL, etc.)
 
 Edit the paths within and run `./parse_vcfs.sh`
