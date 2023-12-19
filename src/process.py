@@ -4,7 +4,7 @@ import numpy as np
 
 def process_ped(pop, unrelpar_path, ped_path, samples):
     
-    population_assignment = pd.read_csv(pop,sep="\t", header=None)
+    population_assignment = pd.read_csv(pop,sep=r"\s+", header=None)
     population_assignment.columns = ['sample_id', 'superpop', 'subpop']
     populations = population_assignment['subpop'].unique().tolist()
     samples_pop={pop:population_assignment[population_assignment['subpop']==pop]['sample_id'].tolist() for pop in populations}
